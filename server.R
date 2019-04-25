@@ -274,6 +274,9 @@ shinyServer(function(input, output) {
     edges$source <- as.character(edges$source)
     edges$target <- as.character(edges$target)
     nodes <- make_node_table(edges)
+    #add from and to node ID's to the edgetable
+    edges$from <- nodes$id[match(edges$source, nodes$label)]
+    edges$to <- nodes$id[match(edges$target, nodes$label)]
 
     return(list('nodes'=nodes,'edges'=edges))
   })
