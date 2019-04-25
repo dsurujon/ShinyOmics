@@ -43,11 +43,11 @@ To run this app locally, you will need [R](https://www.r-project.org/), [RStudio
 With ```server.R``` open in RStudio, hit the "Run App" button on the upper right corner.     
 
 ## Using custom data
-It is possible to use custom data from other experiments in this app. All datasets need to be specified in the experiment sheet ```data/exptsheet.csv```. You can add new columns to specify metadata pertaining to each experiment. The minimum required columns are ```Name``` (which should be a unique identifier, we recommend using ```Experiment-Time``` as the format), ```Experiment``` (this should be the same for all timepoints of the same experiment),```RNAseqFile``` (the csv file corresponding to that experimental datapoint) , ```Strain``` (strain or organism name), ```MetadataFile``` (the csv file corresponding to the strain), ```Time``` (timepoint of the RNAseq experiment).     
-The app then refers to the ```RNAseqFile``` and ```MetadataFile``` columns to find the appropriate data. Make sure all data and metadata files are in the file locations specified.     
+It is possible to use custom data from other experiments in this app. All datasets need to be specified in the experiment sheet ```data/exptsheet.csv```. You can add new columns to specify metadata pertaining to each experiment. The minimum required columns are ```Name``` (which should be a unique identifier, we recommend using ```Experiment-Time``` as the format), ```Experiment``` (this should be the same for all timepoints of the same experiment),```DEseqFile``` (the csv file corresponding to that experimental datapoint) , ```Strain``` (strain or organism name), ```MetadataFile``` (the csv file corresponding to the strain), ```Time``` (timepoint of the RNAseq experiment).     
+The app then refers to the ```DEseqFile``` and ```MetadataFile``` columns to find the appropriate data. Make sure all data and metadata files are in the file locations specified.     
 #### Metadata Files
 There should be one metadata file per strain. The metadata files should have at least a ```Gene``` column, and the gene labels under this column should match those in the RNAseq data files and network files. You can add any number of additional columns, and the selectors in the app will update accordingly.     
-#### RNAseq Data Files
+#### DEseq Data Files
 The data files used are the standard output of [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html). The requirement for the app is to have at least 3 columns: ```Gene```, ```log2FoldChange``` (DE), and ```padj``` (adjusted p-value) in each of the data files.     
 #### Network Files
 Network files need to be specified in the ```data/network``` subdirectory, and should contain edge tables. The file name should end with ```_Edges.csv```, and the table should have two columns ```source``` and ```target```. Make sure the gene labels match those in the metadata files and RNAseq data files.     
