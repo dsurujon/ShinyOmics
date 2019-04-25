@@ -119,8 +119,8 @@ shinyUI(fluidPage(
                                             "networkplot")
                     ),
                     column(width=4,
-                           h4("TIG",style="background-color:	#32CD32"),
-                           h4("Selected", style = "background-color:magenta"),
+                           h4("Significant Gene",style="background-color:	#32CD32"),
+                           h4("Selected Gene", style = "background-color:magenta"),
                            uiOutput('networkx_selector'),
                            uiOutput('networky_selector'),
                            uiOutput('networkcolor_selector'),

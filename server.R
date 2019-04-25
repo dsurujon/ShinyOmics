@@ -177,7 +177,7 @@ shinyServer(function(input, output) {
     values$exptsheet_subset <- exptsheet_subset
     RNAseq_panel3 <- metadata
     for (i in c(1:nrow(exptsheet_subset))){
-      thisRNAfile <- read.csv(exptsheet_subset$RNAseqFile[i], header=T, stringsAsFactors = F)
+      thisRNAfile <- read.csv(exptsheet_subset$DEseqFile[i], header=T, stringsAsFactors = F)
       thisRNAfile <- thisRNAfile[,c('Gene', 'log2FoldChange')]
       thisRNAfile$log2FoldChange <- as.numeric(as.character(thisRNAfile$log2FoldChange))
       names(thisRNAfile)[2] <- exptsheet_subset$Name[i]

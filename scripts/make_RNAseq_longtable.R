@@ -3,7 +3,7 @@ make_RNAseq_longtable <- function(exptsheet, thisexpt){
   
   RNAdf <- data.frame()
   for (i in c(1:nrow(exptsubsheet))){
-    thisfile <- exptsubsheet$RNAseqFile[i]
+    thisfile <- exptsubsheet$DEseqFile[i]
     thistime <- exptsubsheet$Time[i]
     f<-read.csv(thisfile, header=T, stringsAsFactors = F)
     f$log2FoldChange <- as.numeric(as.character(f$log2FoldChange))
