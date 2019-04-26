@@ -16,7 +16,7 @@ exptsheet<-read.csv('./data/exptsheet.csv', header=T, stringsAsFactors = F)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("EDGE: Exploration of Differential Gene Expression"),
+  titlePanel("ShinyOmics: Exploration of 'Omics' data"),
     
     # Main panel has 4 tab panels
     mainPanel(
