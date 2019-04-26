@@ -1,7 +1,7 @@
 ShinyOmics: Exploration of Omics data
 -----------------------------------------
 
-This app allows exploratory data analysis on any 'Omics' dataset, e.g. Transcriptomics (from RNAseq), proteomics, genetic screens. It comes pre-loaded RNAseq with data from Zhu et al 2019 *(in preparation)* where two strains of *Streptococcus pneumoniae* (19F and T4) are treated with 4 different antibiotics (LVX, KAN, VNC, RIF). The following guide assumes transcriptomic data is supplied, but any type of differential expression/abundance data can be provided. To access the app with this dataset, visit http://bioinformatics.bc.edu/shiny/ShinyOmics/
+This app allows exploratory data analysis on any 'Omics' dataset, e.g. Transcriptomics, proteomics, phenotypic screens. It comes pre-loaded RNAseq with data from Zhu et al 2019 *(in preparation)* where two strains of *Streptococcus pneumoniae* (19F and T4) are treated with 4 different antibiotics (LVX, KAN, VNC, RIF). The following guide assumes transcriptomic data is supplied, but any type of differential expression/abundance data can be provided. To access the app with this dataset, visit http://bioinformatics.bc.edu/shiny/ShinyOmics/
 
 There are 4 panels that allow for different types of data exploration: 
 * **Single Experiment:** plot differential expression (DE) against any other metadata associated with genes (e.g. to answer whether essential genes are more downregulated, you can select Essentiality as the x-axis metadata variable)
