@@ -2,6 +2,7 @@
 library(ggplot2)
 library(visNetwork)
 library(igraph)
+library(colorspace)
 library(shiny)
 
 source('./scripts/make_RNAseq_longtable.R')
@@ -211,7 +212,7 @@ shinyServer(function(input, output) {
       RNAseq_panel3_mx[is.na(RNAseq_panel3_mx[,i]), i] <- mean(RNAseq_panel3_mx[,i], na.rm = TRUE)
     }
     RNAseq_panel3_mx_subset <- RNAseq_panel3_mx[row.names(RNAseq_panel3_mx) %in% values$geneselection_panel3,]
-    heatmap(RNAseq_panel3_mx_subset, na.rm=T)
+    heatmap(RNAseq_panel3_mx_subset, na.rm=T, col = diverge_hsv(50), scale="none", margins = c(5,10))
   })
   
   output$PCA_color_selector <- renderUI({
@@ -270,7 +271,9 @@ shinyServer(function(input, output) {
   selectedNetwork <- reactive({
     thisnet <- input$network_selector
     edgetablefile <- as.character(net_table$File[net_table$Name==thisnet])
+    print(c(thisnet, edgetablefile))
     edges <- read.csv(edgetablefile, header=T, stringsAsFactors = F)
+    #print(head(edges))
     edges$source <- as.character(edges$source)
     edges$target <- as.character(edges$target)
     nodes <- make_node_table(edges)
@@ -305,9 +308,11 @@ shinyServer(function(input, output) {
   
   # network plot
   output$networkplot <- renderVisNetwork({
-    validate(need(values$RNAdata_network, message="Waiting for datasets to be loaded..."))
+    validate(need(!is.null(values$RNAdata_network) & !is.null(input$network_selector), message="Waiting for datasets to be loaded..."))
     rnadata <- values$RNAdata_network
+    #print(head(rnadata))
     networkdata <- selectedNetwork()
+    print("network data loaded")
     values$networkdata <- networkdata
     nodes <- networkdata$nodes
     edges <- networkdata$edges
