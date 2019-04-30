@@ -30,7 +30,7 @@ In this plot we compare the Rifampicin (RIF) response to Kanamycin (KAN) in the 
 
 ### Compare All Experiments
 This panel allows a more global comparison across all conditions (for a given strain/organism). Select the strain you would like to visualize using the dropdown menu. The heatmap on the left will show DE from all experiments (columns) for all genes (rows). The plot on the right displays the first two principal components, where each point is an experiment/timepoint. The dropdown menu allows you to color the points by one variable on the experiment sheet. The plot below the PCA plot shows the % variance explained by each of the principal components.     
-![Panel3 example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/DF2WzmD35c0RxSk/Pasted%20Image%3A%20Apr%209%2C%202019%20-%2011%3A08%3A12am)
+![Panel3 example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/vCMqN0SKWuyn7E2/Pasted%20Image%3A%20Apr%2030%2C%202019%20-%205%3A44%3A14pm)
 
 ### Network
 Here, you can visualize any network (the preloaded data has a metabolic network and transcription regulatory network), and overlay TIGs. Use the corresponding dropdown selectors to selet the appropriate network, experiment and timepoint to visualize. The package ```visNetwork``` is used to generate the interactive network plot, where you can zoom in/out, move nodes around, and select one node to highlight its neighbors.     
