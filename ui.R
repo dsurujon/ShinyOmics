@@ -90,6 +90,7 @@ shinyUI(fluidPage(
                   fluidRow(
                     column(width=6,
                       textAreaInput('findgenes_panel3', 'Paste gene list for subsetting the heatmap- one gene per row', value=""),
+                      checkboxInput('heatmapDendro', 'Cluster heatmap', value=TRUE),
                       plotOutput('allexpt_heatmap',  height='800px')
                     ),
                     column(width=6,

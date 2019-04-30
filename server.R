@@ -212,7 +212,13 @@ shinyServer(function(input, output) {
       RNAseq_panel3_mx[is.na(RNAseq_panel3_mx[,i]), i] <- mean(RNAseq_panel3_mx[,i], na.rm = TRUE)
     }
     RNAseq_panel3_mx_subset <- RNAseq_panel3_mx[row.names(RNAseq_panel3_mx) %in% values$geneselection_panel3,]
-    heatmap(RNAseq_panel3_mx_subset, na.rm=T, col = diverge_hsv(50), scale="none", margins = c(5,10))
+    isClustered <- input$heatmapDendro
+    if (isClustered){
+      heatmap(RNAseq_panel3_mx_subset, na.rm=T, col = diverge_hsv(50), scale="none", margins = c(5,10))
+    }else{
+      heatmap(RNAseq_panel3_mx_subset, Rowv = NA, Colv = NA, na.rm=T, col = diverge_hsv(50), scale="none", margins = c(5,10))
+      
+    }
   })
   
   output$PCA_color_selector <- renderUI({
