@@ -31,6 +31,7 @@ shinyUI(fluidPage(
                     uiOutput('xaxis_selector_single')
                   ), # /fluidRow - experiment/gene selector
                   fluidRow(
+                    tags$h3("Visualization options"),
                     checkboxInput("jitter_single", "Jitter x axis", FALSE),
                     checkboxInput("showviolins_single", "Show Violin plots with Mean+-95% CI", FALSE),
                     checkboxInput('xaxis_log_single', 'log-scale x axis', FALSE),
@@ -39,6 +40,7 @@ shinyUI(fluidPage(
                   ), # /fluidRow - plot options
                   
                   fluidRow(
+                    tags$p("Scatter plot of DE (y-axis) of the selected experiments, against metadata variable (x-axis). \n Use the selectors above to change the experiment, or the metadata. \n Use the text box to paste a list of genes (one per line) to display only those genes."),
                     tags$p("Use the brush (draw a rectangle) on the plot to select genes. NOTE: BRUSH DOESN'T WORK WELL WHEN JITTER IS ON"),
                     plotOutput("TIGsingleplot",
                                brush = brushOpts(id = "plot1_brush")
@@ -68,7 +70,7 @@ shinyUI(fluidPage(
                     uiOutput('color_selector_panel2')
                   ), #fluidRow - select color var
                   fluidRow(
-                    tags$p('Use the brush on the plot to select genes'),
+                    tags$p('Scatter plot of DE from two experiments. Make sure the two experiments are from the same organism. \n Use the brush on the plot to select genes'),
                     plotOutput("TIGdoubleplot",
                                brush = brushOpts(id="plot2_brush")
                     )# plotOutput
@@ -91,9 +93,11 @@ shinyUI(fluidPage(
                     column(width=6,
                       textAreaInput('findgenes_panel3', 'Paste gene list for subsetting the heatmap- one gene per row', value=""),
                       checkboxInput('heatmapDendro', 'Cluster heatmap', value=TRUE),
+                      tags$p('Heatmap of DE of all genes (rows) across all experiments (columns). Red: upregulated, Blue: downregulated. Dendrograms are based on hierarchical clustering with euclidean distance, and can be turned off.'),
                       plotOutput('allexpt_heatmap',  height='800px')
                     ),
                     column(width=6,
+                      tags$p("Principal Component plot showing each experiment as a point along the top two components. "),
                       uiOutput('PCA_color_selector'),
                       plotOutput('allexpt_PCA'),
                       plotOutput('PCA_screeplot')

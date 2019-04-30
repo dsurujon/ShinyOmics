@@ -136,7 +136,7 @@ shinyServer(function(input, output) {
   
   # make the variable selector for the color based on metadata table
   output$color_selector_panel2 <- renderUI({
-    selectInput('color_plot2', 'Variable', values$metacols_single)
+    selectInput('color_plot2', 'Color Variable', values$metacols_single)
   })
   
   # plot output
