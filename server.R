@@ -136,12 +136,12 @@ shinyServer(function(input, output) {
   
   # make the variable selector for the color based on metadata table
   output$color_selector_panel2 <- renderUI({
-    selectInput('color_plot2', 'Color Variable', values$metacols_single)
+    selectInput('color_plot2', 'Color Variable', values$metacols_double)
   })
   
   # plot output
   output$TIGdoubleplot <- renderPlot({
-    validate(need(values$Panel2_samestrain, message="Two experiments must come from the same organism/strain"))
+    validate(need(values$Panel2_samestrain==T, message="Two experiments must come from the same organism/strain"))
     validate(need(values$RNAdata_double, message="Waiting for datasets to be loaded..."))
     
     df <- values$RNAdata_double
