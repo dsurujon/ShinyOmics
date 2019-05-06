@@ -9,10 +9,11 @@ source('./scripts/make_RNAseq_longtable.R')
 source('./scripts/get_ci.R')
 source('./scripts/make_node_table.R')
 exptsheet<-read.csv('./data/exptsheet.csv', header=T, stringsAsFactors = F)
-values <- reactiveValues()
+
 
 # Define server logic 
 shinyServer(function(input, output) {
+  values <- reactiveValues()
   #############
   ## Panel 1 ##
   #############
