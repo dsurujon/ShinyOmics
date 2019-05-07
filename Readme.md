@@ -16,26 +16,26 @@ There are several visualization options. For categorical x-axis variables, check
 Some metadata variables may follow a log-normal distribution. In order to accommodate for this, there is also a checkbox to log-transform the x-axis ("log-scale x axis"). Finally, the slider "Transparency" controls the transparency of the points. For instance, for experiments where a large number of points are plotted simultaneously, a value of ~0.5 is recommended.     
     
 The scatter plot itself is brushable, meaning it is possble to select a subset of points by dragging a selection window directly on the plot. The selected genes will then be displayed on the table at the bottom of the screen. For example, in the Figure below we selected the genes that are highly upregulated in the functional tag "GENETIC INFORMATION PROCESSING" at 240 minutes: 
-![Brush example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/CuF1dl5AyADSTrB/Pasted%20Image%3A%20Apr%204%2C%202019%20-%2012%3A56%3A25pm)    
+![Brush example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/uzIZBL4fq5uXVKF/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A22%3A16pm)    
     
     
 It is also possible to only display a set of previously identified genes. To do this, type or paste a gene list in the "Paste gene list" text box. This will filter the dataset such that only these genes will be displayed
-![Geneset example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/Q3Uoiu2tQGEBCfO/Pasted%20Image%3A%20Apr%204%2C%202019%20-%2012%3A58%3A29pm)    
+![Geneset example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/vZZHQfdXgecrOCv/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A23%3A51pm)    
 
 ### Compare 2 Experiments
 This panel allows you to compare two experiments **from the same organism**. Both experiments need to have the same metadata file associated with them to be able to cross-reference the genes. The comparisons will be made for each timepoint, so another requirement here is that there is at least one overlapping time point in the two experiments.    
 Use the dropdown lists to select the two experiments to compare (Experiment 1 will appear as the x-axis, and Experiment 2 will appear as the y-axis). A third dropdown list ("Variable") determines the color variable.     
 In this plot we compare the Rifampicin (RIF) response to Kanamycin (KAN) in the strain T4. There are some Genetic Information Processing genes that are uniquely upregulated in KAN, and some Metabolism genes uniquely downregulated in RIF. Similar to panel 1, it is possible to brush this plot and update the table below (brushed at 120 minutes). It is also possible to only display a subset of genes, defined by the user in the "Paste gene list" text box.       
-![Panel2 Example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/vwJuQxV5TmEgvfv/Pasted%20Image%3A%20Apr%204%2C%202019%20-%201%3A06%3A38pm)
+![Panel2 Example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/4VpGSHiECQfvNc4/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A24%3A52pm)
 
 ### Compare All Experiments
 This panel allows a more global comparison across all conditions (for a given strain/organism). Select the strain you would like to visualize using the dropdown menu. The heatmap on the left will show DE from all experiments (columns) for all genes (rows). The plot on the right displays the first two principal components, where each point is an experiment/timepoint. The dropdown menu allows you to color the points by one variable on the experiment sheet. The plot below the PCA plot shows the % variance explained by each of the principal components.     
-![Panel3 example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/vCMqN0SKWuyn7E2/Pasted%20Image%3A%20Apr%2030%2C%202019%20-%205%3A44%3A14pm)
+![Panel3 example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/PNenkWQD6T6uDBI/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A25%3A43pm)
 
 ### Network
 Here, you can visualize any network (the preloaded data has a metabolic network and transcription regulatory network), and overlay DEGs (up/down-regulated genes are red/blue respectively). Use the corresponding dropdown selectors to selet the appropriate network, experiment and timepoint to visualize. The package ```visNetwork``` is used to generate the interactive network plot, where you can zoom in/out, move nodes around, and select one node to highlight its neighbors.     
 The scatter plot on the right side can be used to explore how network characteristics relate to gene expression or metadata. The x-axis selector gives you the option of 3 network characteristics for each gene (Degree, Betweenness Centrality and Eigencentrality, see Table below), and the y-axis selector uses DE and any other metadata columns included in the metadata file. This figure is also brushable, and the brushed genes will appear in the table below.      
-![Network example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/45I2SQM8byE9YP6/Pasted%20Image%3A%20Apr%204%2C%202019%20-%203%3A29%3A35pm)   
+![Network example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/JpbFYJ7CW4TNMKN/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A28%3A30pm)   
     
 | Centrality measure | Definition                                                                                                                                                                                                                               |
 |--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
