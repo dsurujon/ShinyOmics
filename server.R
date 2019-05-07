@@ -140,13 +140,25 @@ shinyServer(function(input, output) {
     selectInput('color_plot2', 'Color Variable', values$metacols_double)
   })
   
+  # get uploaded gene selection
+  observe({
+    infile<-input$findgenes_double
+    if (infile==""){
+      values$geneselection_double <- values$RNAdata_double[,'Gene']}
+    else{
+      genes <- unlist(strsplit(infile,'\n'))
+      values$geneselection_double<-genes
+    }
+  })
+  
   # plot output
   output$TIGdoubleplot <- renderPlot({
     validate(need(values$Panel2_samestrain==T, message="Two experiments must come from the same organism/strain"))
     validate(need(values$RNAdata_double, message="Waiting for datasets to be loaded..."))
     
     df <- values$RNAdata_double
-    df <- df[!is.na(df$log2FoldChange.x) & !is.na(df$log2FoldChange.y),]
+    df <- df[!is.na(df$log2FoldChange.x) & !is.na(df$log2FoldChange.y) & 
+               df$Gene %in% values$geneselection_double,]
     #values$RNAdata_double <- df
     
     colorvar <- input$color_plot2
@@ -158,9 +170,12 @@ shinyServer(function(input, output) {
   })
   
   # brushed table output
-  output$brushedTable_double <- renderDataTable(
-    brushedPoints(values$RNAdata_double,input$plot2_brush, allRows=F, xvar = "log2FoldChange.x", yvar="log2FoldChange.y")
-  )
+  output$brushedTable_double <- renderDataTable({
+    df <- values$RNAdata_double
+    df <- df[!is.na(df$log2FoldChange.x) & !is.na(df$log2FoldChange.y) & 
+               df$Gene %in% values$geneselection_double,]
+    brushedPoints(df,input$plot2_brush, allRows=F, xvar = "log2FoldChange.x", yvar="log2FoldChange.y")
+  })
   
   
   #############
@@ -238,7 +253,14 @@ shinyServer(function(input, output) {
     colorvar <- input$PCA_color
     pca_df <- as.data.frame(pca$x)
     pca_df <- cbind(pca_df, values$exptsheet_subset)
-    ggplot(pca_df, aes_string(x="PC1", y="PC2", color=colorvar))+theme_bw()+geom_point()
+    
+    if(is.numeric(pca_df[[colorvar]])==T){
+      ggplot(pca_df, aes_string(x="PC1", y="PC2", color=colorvar))+theme_bw()+geom_point(size=3)+
+        scale_color_gradientn(colours = rainbow(5))
+    }else{
+      ggplot(pca_df, aes_string(x="PC1", y="PC2", color=colorvar))+theme_bw()+geom_point(size=3)
+    }
+    
   })
   #scree plot
   output$PCA_screeplot <- renderPlot({
@@ -327,7 +349,11 @@ shinyServer(function(input, output) {
     df <- merge(nodes, rnadata, by.x="label", by.y="Gene", all.x=T, all.y=F)
     
     ## NETWORK LABELS & COLORS
-    df$group[df$Sig & !is.na(df$Sig)] = "TIG"
+    df$group[df$Sig & !is.na(df$Sig) & 
+               df$log2FoldChange>1 & !is.na(df$log2FoldChange)] = "upSIG"
+    df$group[df$Sig & !is.na(df$Sig) & 
+               df$log2FoldChange< -1 & !is.na(df$log2FoldChange)] = "downSIG"
+    
     df <- unique(df)
     values$networkdf <- df
     
@@ -343,7 +369,8 @@ shinyServer(function(input, output) {
                                          border:none;
                                          outline:none;'),
                  highlightNearest = list(enabled =TRUE, degree = 1, hover = T))%>%
-      visGroups(groupname = "TIG", color = "green")
+      visGroups(groupname = "upSIG", color = "red") %>%
+      visGroups(groupname = "downSIG", color = "blue")
     
     
   })

@@ -26,25 +26,24 @@ shinyUI(fluidPage(
          #############
          tabPanel('Single Experiment', 
                   fluidRow(
-                    selectInput('expt_single', 'Select experiment', unique(exptsheet$Experiment)),
-                    textAreaInput('findgenes_single', 'Paste gene list - one gene per row', value=""),
-                    uiOutput('xaxis_selector_single')
-                  ), # /fluidRow - experiment/gene selector
-                  fluidRow(
-                    tags$h3("Visualization options"),
-                    checkboxInput("jitter_single", "Jitter x axis", FALSE),
-                    checkboxInput("showviolins_single", "Show Violin plots with Mean+-95% CI", FALSE),
-                    checkboxInput('xaxis_log_single', 'log-scale x axis', FALSE),
-                    sliderInput('alpha_single', 'Transparency', 0, 1, step=0.05, value=0.7)
-                    
-                  ), # /fluidRow - plot options
-                  
-                  fluidRow(
-                    tags$p("Scatter plot of DE (y-axis) of the selected experiments, against metadata variable (x-axis). \n Use the selectors above to change the experiment, or the metadata. \n Use the text box to paste a list of genes (one per line) to display only those genes."),
-                    tags$p("Use the brush (draw a rectangle) on the plot to select genes. NOTE: BRUSH DOESN'T WORK WELL WHEN JITTER IS ON"),
-                    plotOutput("TIGsingleplot",
-                               brush = brushOpts(id = "plot1_brush")
-                    )#/plotOutput
+                    column(width=3, 
+                           selectInput('expt_single', 'Select experiment', unique(exptsheet$Experiment)),
+                           textAreaInput('findgenes_single', 'Paste gene list - one gene per row', 
+                                         value=""),
+                           uiOutput('xaxis_selector_single'),
+                           
+                           tags$h3("Visualization options"),
+                           checkboxInput("jitter_single", "Jitter x axis", FALSE),
+                           checkboxInput("showviolins_single", "Show Violin plots with Mean+-95% CI", FALSE),
+                           checkboxInput('xaxis_log_single', 'log-scale x axis', FALSE),
+                           sliderInput('alpha_single', 'Transparency', 0, 1, step=0.05, value=0.7)
+                           ), # /Column 1: plot options
+                    column(width=9,
+                           tags$p("Scatter plot of DE (y-axis) of the selected experiments, against metadata variable (x-axis). \n Use the selectors above to change the experiment, or the metadata. \n Use the text box to paste a list of genes (one per line) to display only those genes."),
+                           tags$p("Use the brush (draw a rectangle) on the plot to select genes. NOTE: BRUSH DOESN'T WORK WELL WHEN JITTER IS ON"),
+                           plotOutput("TIGsingleplot",
+                                      brush = brushOpts(id = "plot1_brush") )
+                           ) # /column 2: plot 
                     
                   ), #/fluidRow for plots
                   
@@ -61,20 +60,22 @@ shinyUI(fluidPage(
          #############
          tabPanel('Compare 2 Experiments', 
                   fluidRow(
-                    selectInput('expt1','Select Experiment 1',unique(exptsheet$Experiment))
-                  ), #fluidRow - first experiment
-                  fluidRow(
-                    selectInput('expt2','Select Experiment 2',unique(exptsheet$Experiment))
-                  ), #fluidRow - second experiment
-                  fluidRow(
-                    uiOutput('color_selector_panel2')
-                  ), #fluidRow - select color var
-                  fluidRow(
-                    tags$p('Scatter plot of DE from two experiments. Make sure the two experiments are from the same organism. \n Use the brush on the plot to select genes'),
-                    plotOutput("TIGdoubleplot",
-                               brush = brushOpts(id="plot2_brush")
-                    )# plotOutput
-                  ),
+                    column(width=3,
+                           selectInput('expt1','Select Experiment 1',unique(exptsheet$Experiment)),
+                           selectInput('expt2','Select Experiment 2',unique(exptsheet$Experiment)),
+                           uiOutput('color_selector_panel2'),
+                           textAreaInput('findgenes_double', 'Paste gene list - one gene per row', 
+                                         value="")
+                           ), #column 1: plot options
+                    column(width=9,
+                           tags$p('Scatter plot of DE from two experiments. Make sure the two experiments are from the same organism. \n Use the brush on the plot to select genes'),
+                           plotOutput("TIGdoubleplot",
+                                      brush = brushOpts(id="plot2_brush")
+                           )# plotOutput
+                           ) #column 2: plot
+                    
+                  ), # fluidrow for plots
+                  
                   fluidRow(
                     dataTableOutput("brushedTable_double")
                   )
@@ -124,7 +125,8 @@ shinyUI(fluidPage(
                                             "networkplot")
                     ),
                     column(width=4,
-                           h4("Significant Gene",style="background-color:	#32CD32"),
+                           h4("Significant Gene (fold change >2)",style="background-color:	#FF2D00"),
+                           h4("Significant Gene (fold change <0.5)",style="background-color:	#0059FF"),
                            h4("Selected Gene", style = "background-color:magenta"),
                            uiOutput('networkx_selector'),
                            uiOutput('networky_selector'),
