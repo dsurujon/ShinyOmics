@@ -1,4 +1,4 @@
-ID,Experiment,Strain,Adapted,AB,Time,RNAseqFile,MetadataFile,Survive,Name
+ID,Experiment,Strain,Adapted,AB,Time,DEseqFile,MetadataFile,Survive,Name
 1,T4_KAN,T4,FALSE,KAN,10,data/RNAseq/TIGR4/wtKan/WT4-KAN10min-WT4-NDC10min-DGE-results.csv,data/metadata/T4_metadata.csv,0,T4_KAN-10
 2,T4_KAN,T4,FALSE,KAN,20,data/RNAseq/TIGR4/wtKan/WT4-KAN20min-WT4-NDC20min-DGE-results.csv,data/metadata/T4_metadata.csv,0,T4_KAN-20
 3,T4_KAN,T4,FALSE,KAN,30,data/RNAseq/TIGR4/wtKan/T4-NDC30min-T4-KAN30min-DGE-results.csv,data/metadata/T4_metadata.csv,0,T4_KAN-30
