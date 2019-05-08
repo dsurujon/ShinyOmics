@@ -95,7 +95,8 @@ shinyUI(fluidPage(
                       textAreaInput('findgenes_panel3', 'Paste gene list for subsetting the heatmap- one gene per row', value=""),
                       checkboxInput('heatmapDendro', 'Cluster heatmap', value=TRUE),
                       tags$p('Heatmap of DE of all genes (rows) across all experiments (columns). Red: upregulated, Blue: downregulated. Dendrograms are based on hierarchical clustering with euclidean distance, and can be turned off.'),
-                      plotOutput('allexpt_heatmap',  height='800px')
+                      plotOutput('allexpt_heatmap',  height='800px'),
+                      downloadButton('panel3download', 'Download Experiment Table')
                     ),
                     column(width=6,
                       tags$p("Principal Component plot showing each experiment as a point along the top two components. "),

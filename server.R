@@ -237,6 +237,15 @@ shinyServer(function(input, output) {
     }
   })
   
+  output$panel3download <- downloadHandler(
+    filename = function() {
+      paste0(input$strain_panel3,"_Allexpts.csv")
+    },
+    content = function(file){
+      write.csv(values$RNAseq_panel3_mx, file)
+    }
+    
+  )
   output$PCA_color_selector <- renderUI({
     validate(need(!is.null(values$RNAseq_panel3_mx), message=""))
     selectInput('PCA_color', 'Color variable for PCA', names(exptsheet))
