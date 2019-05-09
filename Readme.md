@@ -1,7 +1,7 @@
 ShinyOmics: Exploration of Omics data
 -----------------------------------------
 
-This app allows exploratory data analysis on any 'Omics' dataset, e.g. Transcriptomics, proteomics, phenotypic screens. It comes pre-loaded RNAseq with data from Zhu et al 2019 *(under review)* where two strains of *Streptococcus pneumoniae* (19F and T4) are treated with 4 different antibiotics (LVX, KAN, VNC, RIF). The following guide assumes transcriptomic data is supplied, but any type of differential expression/abundance data can be provided. To access the app with this dataset, visit http://bioinformatics.bc.edu/shiny/ShinyOmics/
+This app allows exploratory data analysis on any 'Omics' dataset, e.g. Transcriptomics, proteomics, phenotypic screens. It comes with pre-loaded RNA-Seq with data from Zhu et al 2019 *(under review)* where two strains of *Streptococcus pneumoniae* (19F and T4) are treated with 4 different antibiotics (LVX, KAN, VNC, RIF). The following guide assumes transcriptomic data is supplied, but any type of differential expression/abundance data can be provided. To access the app with this dataset, visit http://bioinformatics.bc.edu/shiny/ShinyOmics/
 
 There are 4 panels that allow for different types of data exploration: 
 * **Single Experiment:** plot differential expression (DE) against any other metadata associated with genes (e.g. to answer whether essential genes are more downregulated, you can select Essentiality as the x-axis metadata variable)
@@ -19,7 +19,7 @@ The scatter plot itself is brushable, meaning it is possble to select a subset o
 ![Brush example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/uzIZBL4fq5uXVKF/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A22%3A16pm)    
     
     
-It is also possible to only display a set of previously identified genes. To do this, type or paste a gene list in the "Paste gene list" text box. This will filter the dataset such that only these genes will be displayed
+It is also possible to only display a set of genes of interest. To do this, type or paste a gene list in the "Paste gene list" text box. This will filter the dataset such that only these genes will be displayed
 ![Geneset example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/vZZHQfdXgecrOCv/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A23%3A51pm)    
 
 ### Compare 2 Experiments
@@ -39,7 +39,7 @@ The scatter plot on the right side can be used to explore how network characteri
     
 | Centrality measure | Definition                                                                                                                                                                                                                               |
 |--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Degree             | Number of neighbors a node has                                                                                                                                                                                                           |
+| Degree             | Number of neighbors a node has.                                                                                                                                                                                                           |
 | Betweenness        | Proportion of shortest paths between nodes that pass through this node. This can be interpreted as the amount of information flow that depends on this node.                                                                             |
 | Eigencentrality    | Importance in the network, depending on how many important neighbors a node has. Two nodes of equal degree might differ in eigencentrality, if one has more high-degree neighbors (resulting in higher eigencentrality) than the other.  |
 
@@ -48,6 +48,14 @@ The scatter plot on the right side can be used to explore how network characteri
 To run this app locally, you will need [R](https://www.r-project.org/), [RStudio](https://www.rstudio.com/products/rstudio/download/) and a few package dependencies. The required packages are ```ggplot2```, ```visNetwork```, ```igraph```, and ```shiny```. To install any of these packages, use the following command in RStudio (once for each package):    
 ```install.packages('shiny')```    
 With ```server.R``` open in RStudio, hit the "Run App" button on the upper right corner.     
+    
+## Directory Structure for ShinyOmics
+![DirectoryStructure](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/IROiFFeZQym980F/Pasted%20Image%3A%20May%209%2C%202019%20-%202%3A56%3A56pm)    
+* All experiments need to be specified in the main experiment sheet 
+* For each organism/strain, there needs to be a metadata file – This file is a table of locus tags and any metadata associated with each locus tag
+* Optional: there can be as many network files as desired
+* The Omics data could be organized in any way. In this case, since the data comes from RNAseq, and from multiple strains, the directory is split first by strain, then by drug. There are several csv files (DESeq2 output) in each of the sub-directories. 
+
 
 ## Using custom data
 To use custom data from other experiments in this app, all datasets need to be specified in the experiment sheet ```data/exptsheet.csv```. You can add new columns to specify metadata pertaining to each experiment. The minimum required columns are ```Name``` (which should be a unique identifier, we recommend using ```Experiment-Time``` as the format), ```Experiment``` (this should be the same for all timepoints of the same experiment),```DEseqFile``` (the csv file corresponding to that experimental datapoint) , ```Strain``` (strain or organism name), ```MetadataFile``` (the csv file corresponding to the strain), ```Time``` (timepoint of the RNAseq experiment).     
