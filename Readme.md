@@ -51,10 +51,10 @@ With ```server.R``` open in RStudio, hit the "Run App" button on the upper right
     
 ## Directory Structure for ShinyOmics
 ![DirectoryStructure](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/IROiFFeZQym980F/Pasted%20Image%3A%20May%209%2C%202019%20-%202%3A56%3A56pm)    
-* All experiments need to be specified in the main experiment sheet 
-* For each organism/strain, there needs to be a metadata file – This file is a table of locus tags and any metadata associated with each locus tag
-* Optional: there can be as many network files as desired
-* The Omics data could be organized in any way. In this case, since the data comes from RNAseq, and from multiple strains, the directory is split first by strain, then by drug. There are several csv files (DESeq2 output) in each of the sub-directories. 
+* All experiments need to be specified in the main experiment sheet, ```exptsheet.csv``` 
+* For each organism/strain, there needs to be a metadata file – This file is a table of locus tags and any metadata associated with each locus tag, under ```metadata/```
+* There can be as many network files as desired, under ```network/```
+* The Omics data could be organized in any way, as long as the file locations are specified in ```exptsheet.csv```. In this case, since the data comes from RNA-Seq, and from multiple strains, the directory is split first by strain, then by drug. There are several csv files (DESeq2 output) in each of the sub-directories. 
 
 
 ## Using custom data
