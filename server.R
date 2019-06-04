@@ -68,7 +68,7 @@ shinyServer(function(input, output) {
     df <- df[!is.na(df$log2FoldChange) & !is.na(df[myaxis]) & 
                df$Gene %in% values$geneselection_single,]
     
-    boolScale <- scale_colour_manual(name="TIG", values=c('black', 'darkgreen'))
+    boolScale <- scale_colour_manual(name="Significant DE", values=c('black', 'darkgreen'))
     myalpha <- 1-input$alpha_single
     
     if(input$jitter_single){
