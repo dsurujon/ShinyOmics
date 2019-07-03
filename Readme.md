@@ -1,4 +1,4 @@
-ShinyOmics: User Guide
+ShinyOmics User Guide
 -----------------------------------------
 
 This app allows exploratory data analysis on any 'Omics' dataset, e.g. Transcriptomics, proteomics, phenotypic screens. It comes with pre-loaded RNA-Seq with data from Zhu et al 2019 *(under review)* where two strains of *Streptococcus pneumoniae* (19F and T4) are treated with 5 different antibiotics (LVX, KAN, VNC, RIF, PEN). The following guide assumes transcriptomic data is supplied, but any type of differential expression/abundance data can be provided. To access the app with this dataset, visit http://bioinformatics.bc.edu/shiny/ShinyOmics/
