@@ -136,6 +136,12 @@ shinyServer(function(input, output) {
     values$RNAdata_single_DL <- brushedPoints(df,input$plot1_brush, allRows=F, xvar = selectedaxis_single(), yvar="log2FoldChange")
   })
   
+  #List of brushed genes
+  output$brushedGenes_single <- renderText({
+    genes <- unique(values$RNAdata_single_DL$Gene)
+    paste(genes, collapse="\n")
+  })
+  
   # download Panel1 Table
   output$panel1download <- downloadHandler(
     filename = function() {
@@ -247,6 +253,11 @@ shinyServer(function(input, output) {
     df <- df[!is.na(df$log2FoldChange.x) & !is.na(df$log2FoldChange.y) & 
                df$Gene %in% values$geneselection_double,]
     values$RNAdata_double_DL <- brushedPoints(df,input$plot2_brush, allRows=F, xvar = "log2FoldChange.x", yvar="log2FoldChange.y")
+  })
+  #List of brushed genes
+  output$brushedGenes_double <- renderText({
+    genes <- unique(values$RNAdata_double_DL$Gene)
+    paste(genes, collapse="\n")
   })
   # download Panel2 Table
   output$panel2download <- downloadHandler(
