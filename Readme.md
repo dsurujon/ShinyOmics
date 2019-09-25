@@ -18,7 +18,8 @@ Some metadata variables may follow a log-normal distribution. In order to accomm
 The scatter plot itself is brushable, meaning it is possble to select a subset of points by dragging a selection window directly on the plot. The selected genes will then be displayed on the table at the bottom of the screen. For example, in the Figure below we selected the genes that are highly upregulated in the functional tag "GENETIC INFORMATION PROCESSING" at 240 minutes: 
 ![Brush example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/uzIZBL4fq5uXVKF/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A22%3A16pm)    
     
-    
+The brushing can be reset by clicking anywhere on the plot.     
+	
 It is also possible to only display a set of genes of interest. To do this, type or paste a gene list in the "Paste gene list" text box. This will filter the dataset such that only these genes will be displayed
 ![Geneset example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/vZZHQfdXgecrOCv/Pasted%20Image%3A%20May%207%2C%202019%20-%2012%3A23%3A51pm)    
 
