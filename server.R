@@ -61,10 +61,13 @@ shinyServer(function(input, output) {
   
   # plot DGE against selected x-axis variable
   output$TIGsingleplot <- renderPlot({
-    validate(need(nrow(values$RNAdata_single)>0, message="Waiting for datasets to be loaded..."))
+    myaxis = selectedaxis_single()
+
+    validate(need(nrow(values$RNAdata_single)>0, message="Waiting for datasets to be loaded..."),
+             need(!is.null(myaxis), message="Waiting for datasets to be loaded..."))
     
     df <- values$RNAdata_single
-    myaxis = selectedaxis_single()
+    
     df <- df[!is.na(df$log2FoldChange) & !is.na(df[myaxis]) & 
                df$Gene %in% values$geneselection_single,]
     
