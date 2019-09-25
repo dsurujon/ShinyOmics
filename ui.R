@@ -38,14 +38,24 @@ shinyUI(fluidPage(
                            checkboxInput('xaxis_log_single', 'log-scale x axis', FALSE),
                            sliderInput('alpha_single', 'Transparency', 0, 1, step=0.05, value=0.7)
                            ), # /Column 1: plot options
-                    column(width=9,
+                    column(width=8,
                            tags$p("Scatter plot of DE (y-axis) of the selected experiments, against metadata variable (x-axis). \n Use the selectors above to change the experiment, or the metadata. \n Use the text box to paste a list of genes (one per line) to display only those genes."),
                            tags$p("Use the brush (draw a rectangle) on the plot to select genes. NOTE: BRUSH DOESN'T WORK WELL WHEN JITTER IS ON"),
                            plotOutput("TIGsingleplot",
                                       brush = brushOpts(id = "plot1_brush") )
-                           ) # /column 2: plot 
+                           ), # /column 2: plot 
+                    column(width=1,
+                           downloadButton('downloadPlot_Panel1_png', 'Download Plot (png)'),
+                           downloadButton('downloadPlot_Panel1_svg', 'Download Plot (svg)'),
+                           downloadButton('downloadPlot_Panel1_pdf', 'Download Plot (pdf)')
+                           
+                           )# /column 3: download buttons
                     
                   ), #/fluidRow for plots
+                  
+                  fluidRow(
+                    downloadButton('panel1download', 'Download Table')
+                  ), #/fluidRow for table DL 
                   
                   fluidRow(
                     dataTableOutput("brushedTable_single")
@@ -67,15 +77,23 @@ shinyUI(fluidPage(
                            textAreaInput('findgenes_double', 'Paste gene list - one gene per row', 
                                          value="")
                            ), #column 1: plot options
-                    column(width=9,
+                    column(width=8,
                            tags$p('Scatter plot of DE from two experiments. Make sure the two experiments are from the same organism. \n Use the brush on the plot to select genes'),
                            plotOutput("TIGdoubleplot",
                                       brush = brushOpts(id="plot2_brush")
                            )# plotOutput
-                           ) #column 2: plot
+                           ), #column 2: plot
+                    column(width=1,
+                           downloadButton('downloadPlot_Panel2_png', 'Download Plot (png)'),
+                           downloadButton('downloadPlot_Panel2_svg', 'Download Plot (svg)'),
+                           downloadButton('downloadPlot_Panel2_pdf', 'Download Plot (pdf)')
+                           
+                    )# /column 3: download buttons
                     
                   ), # fluidrow for plots
-                  
+                  fluidRow(
+                    downloadButton('panel2download', 'Download Table')
+                  ), #/fluidRow for table DL 
                   fluidRow(
                     dataTableOutput("brushedTable_double")
                   )
@@ -140,7 +158,9 @@ shinyUI(fluidPage(
                     )
                     
                   ),#/fluidRow
-                  
+                  fluidRow(
+                    downloadButton('panel4download', 'Download Table')
+                  ), #/fluidRow for table DL 
                   fluidRow(
                     dataTableOutput("brushedTable_netstats")
                     

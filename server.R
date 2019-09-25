@@ -95,8 +95,29 @@ shinyServer(function(input, output) {
     if(input$xaxis_log_single){
       p=p+scale_x_log10()
     }
+    values$plot_Panel1 <- p
     return(p)
   })
+  
+  ## PLOT DOWNLOADS (png, svg, pdf)
+  output$downloadPlot_Panel1_png <- downloadHandler(
+    filename = function() { paste(input$expt_single, '_Single_Expt.png', sep='') },
+    content = function(file) {
+      ggsave(file, plot = values$plot_Panel1, device = "png")
+    }
+  )
+  output$downloadPlot_Panel1_svg <- downloadHandler(
+    filename = function() { paste(input$expt_single, '_Single_Expt.svg', sep='') },
+    content = function(file) {
+      ggsave(file, plot = values$plot_Panel1, device = "svg")
+    }
+  )
+  output$downloadPlot_Panel1_pdf <- downloadHandler(
+    filename = function() { paste(input$expt_single, '_Single_Expt.pdf', sep='') },
+    content = function(file) {
+      ggsave(file, plot = values$plot_Panel1, device = "pdf")
+    }
+  )
   
   # Table ouptut of selected genes
   output$brushedTable_single <- renderDataTable({
@@ -104,9 +125,18 @@ shinyServer(function(input, output) {
     myaxis = selectedaxis_single()
     df <- df[!is.na(df$log2FoldChange) & !is.na(df[myaxis]) & 
                df$Gene %in% values$geneselection_single,]
-    
-    brushedPoints(df,input$plot1_brush, allRows=F, xvar = selectedaxis_single(), yvar="log2FoldChange")
+    values$RNAdata_single_DL <- brushedPoints(df,input$plot1_brush, allRows=F, xvar = selectedaxis_single(), yvar="log2FoldChange")
   })
+  
+  # download Panel1 Table
+  output$panel1download <- downloadHandler(
+    filename = function() {
+      paste0(input$expt_single,"_Single_Expt.csv")
+    },
+    content = function(file){
+      write.csv(values$RNAdata_single_DL, file)
+    } 
+  )
   
   #############
   ## Panel 2 ##
@@ -166,20 +196,50 @@ shinyServer(function(input, output) {
     
     colorvar <- input$color_plot2
     
-    ggplot(df, aes(x=log2FoldChange.x, y=log2FoldChange.y))+geom_point(alpha=0.3, aes_string(color=colorvar))+
+    p <- ggplot(df, aes(x=log2FoldChange.x, y=log2FoldChange.y))+geom_point(alpha=0.3, aes_string(color=colorvar))+
       labs(x='DE- Experiment1',y='DE - Experiment2')+facet_grid(.~Time)+
       theme_classic()
     
+    values$plot_Panel2 <- p
+    p
+    
   })
+  ## PLOT DOWNLOADS (png, svg, pdf)
+  output$downloadPlot_Panel2_png <- downloadHandler(
+    filename = function() { paste0(input$expt1,"_",input$expt2, '.png') },
+    content = function(file) {
+      ggsave(file, plot = values$plot_Panel2, device = "png")
+    }
+  )
+  output$downloadPlot_Panel2_svg <- downloadHandler(
+    filename = function() { paste0(input$expt1,"_",input$expt2, '.svg') },
+    content = function(file) {
+      ggsave(file, plot = values$plot_Panel2, device = "svg")
+    }
+  )
+  output$downloadPlot_Panel2_pdf <- downloadHandler(
+    filename = function() { paste0(input$expt1,"_",input$expt2, '.pdf') },
+    content = function(file) {
+      ggsave(file, plot = values$plot_Panel2, device = "pdf")
+    }
+  )
   
   # brushed table output
   output$brushedTable_double <- renderDataTable({
     df <- values$RNAdata_double
     df <- df[!is.na(df$log2FoldChange.x) & !is.na(df$log2FoldChange.y) & 
                df$Gene %in% values$geneselection_double,]
-    brushedPoints(df,input$plot2_brush, allRows=F, xvar = "log2FoldChange.x", yvar="log2FoldChange.y")
+    values$RNAdata_double_DL <- brushedPoints(df,input$plot2_brush, allRows=F, xvar = "log2FoldChange.x", yvar="log2FoldChange.y")
   })
-  
+  # download Panel2 Table
+  output$panel2download <- downloadHandler(
+    filename = function() {
+      paste0(input$expt1,"_",input$expt2,"_Comparison.csv")
+    },
+    content = function(file){
+      write.csv(values$RNAdata_double_DL, file)
+    } 
+  )
   
   #############
   ## Panel 3 ##
@@ -433,6 +493,15 @@ shinyServer(function(input, output) {
     myxaxis <- axisvars$xaxisvar
     myyaxis <- axisvars$yaxisvar
 
-    brushedPoints(values$networkdf,input$networkstats_brush, allRows=F, xvar = myxaxis, yvar=myyaxis)
+    values$networkdf_DL <- brushedPoints(values$networkdf,input$networkstats_brush, allRows=F, xvar = myxaxis, yvar=myyaxis)
   })
+  # Download table with network data
+  output$panel4download <- downloadHandler(
+    filename = function() {
+      paste0(input$network_experiment, "_",input$networkdatatime ,"_Network.csv")
+    },
+    content = function(file){
+      write.csv(values$networkdf_DL, file)
+    } 
+  )
 })
