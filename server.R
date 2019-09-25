@@ -53,6 +53,13 @@ shinyServer(function(input, output) {
     selectInput('xaxis_variable', 'Variable', values$metacols_single)
   })
   
+  # make a selector for the timepoints to display
+  output$timepoint_selector_single <- renderUI({
+    df <- values$RNAdata_single
+    timepoints <- sort(unique(df$Time))
+    checkboxGroupInput('timepoints_single', 'Timepoints to Display', timepoints, selected=timepoints)
+  })
+  
   # select x axis variable
   selectedaxis_single <- reactive({
     validate(need(nrow(values$RNAdata_single)>0, message="Waiting for datasets to be loaded..."))
@@ -62,14 +69,15 @@ shinyServer(function(input, output) {
   # plot DGE against selected x-axis variable
   output$TIGsingleplot <- renderPlot({
     myaxis = selectedaxis_single()
-
+    timepoints_to_use <- input$timepoints_single
     validate(need(nrow(values$RNAdata_single)>0, message="Waiting for datasets to be loaded..."),
              need(!is.null(myaxis), message="Waiting for datasets to be loaded..."))
     
     df <- values$RNAdata_single
     
     df <- df[!is.na(df$log2FoldChange) & !is.na(df[myaxis]) & 
-               df$Gene %in% values$geneselection_single,]
+               df$Gene %in% values$geneselection_single & 
+               df$Time %in% timepoints_to_use,]
     
     boolScale <- scale_colour_manual(name="Significant DE", values=c('black', 'darkgreen'))
     myalpha <- 1-input$alpha_single
@@ -172,6 +180,12 @@ shinyServer(function(input, output) {
   output$color_selector_panel2 <- renderUI({
     selectInput('color_plot2', 'Color Variable', values$metacols_double)
   })
+  # make a selector for the timepoints to display
+  output$timepoint_selector_double <- renderUI({
+    df <- values$RNAdata_double
+    timepoints <- sort(unique(df$Time))
+    checkboxGroupInput('timepoints_double', 'Timepoints to Display', timepoints, selected=timepoints)
+  })
   
   # get uploaded gene selection
   observe({
@@ -187,11 +201,14 @@ shinyServer(function(input, output) {
   # plot output
   output$TIGdoubleplot <- renderPlot({
     validate(need(values$Panel2_samestrain==T, message="Two experiments must come from the same organism/strain"))
-    validate(need(values$RNAdata_double, message="Waiting for datasets to be loaded..."))
+    validate(need(!is.null(values$RNAdata_double), message="Waiting for datasets to be loaded..."),
+             need(!is.null(input$color_plot2), message="Waiting for datasets to be loaded..."))
+    timepoints_to_use <- input$timepoints_double
     
     df <- values$RNAdata_double
     df <- df[!is.na(df$log2FoldChange.x) & !is.na(df$log2FoldChange.y) & 
-               df$Gene %in% values$geneselection_double,]
+               df$Gene %in% values$geneselection_double & 
+               df$Time %in% timepoints_to_use,]
     #values$RNAdata_double <- df
     
     colorvar <- input$color_plot2

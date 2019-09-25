@@ -37,6 +37,7 @@ shinyUI(fluidPage(
                            checkboxInput("showviolins_single", "Show Violin plots with Mean+-95% CI", FALSE),
                            checkboxInput('xaxis_log_single', 'log-scale x axis', FALSE),
                            sliderInput('alpha_single', 'Transparency', 0, 1, step=0.05, value=0.7)
+                           
                            ), # /Column 1: plot options
                     column(width=8,
                            tags$p("Scatter plot of DE (y-axis) of the selected experiments, against metadata variable (x-axis). \n Use the selectors above to change the experiment, or the metadata. \n Use the text box to paste a list of genes (one per line) to display only those genes."),
@@ -45,6 +46,7 @@ shinyUI(fluidPage(
                                       brush = brushOpts(id = "plot1_brush") )
                            ), # /column 2: plot 
                     column(width=1,
+                           uiOutput('timepoint_selector_single'),
                            downloadButton('downloadPlot_Panel1_png', 'Download Plot (png)'),
                            downloadButton('downloadPlot_Panel1_svg', 'Download Plot (svg)'),
                            downloadButton('downloadPlot_Panel1_pdf', 'Download Plot (pdf)')
@@ -84,6 +86,7 @@ shinyUI(fluidPage(
                            )# plotOutput
                            ), #column 2: plot
                     column(width=1,
+                           uiOutput('timepoint_selector_double'),
                            downloadButton('downloadPlot_Panel2_png', 'Download Plot (png)'),
                            downloadButton('downloadPlot_Panel2_svg', 'Download Plot (svg)'),
                            downloadButton('downloadPlot_Panel2_pdf', 'Download Plot (pdf)')
