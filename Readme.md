@@ -1,3 +1,5 @@
+![GitHub](https://img.shields.io/github/license/dsurujon/ShinyOmics?color=Green&style=plastic)    
+
 ShinyOmics User Guide
 -----------------------------------------
 
