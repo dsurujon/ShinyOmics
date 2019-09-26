@@ -344,6 +344,18 @@ shinyServer(function(input, output) {
     validate(need(!is.null(values$RNAseq_panel3_mx), message=""))
     selectInput('PCA_color', 'Color variable for PCA', names(exptsheet))
   })
+  output$PCA_x_selector <- renderUI({
+    validate(need(!is.null(values$pca), message=""))
+    selectInput('PCA_X', 'Component on X axis', 
+                c('PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6', 'PC7', 'PC8', 'PC9', 'PC10'),
+                selected = 'PC1')
+  })
+  output$PCA_y_selector <- renderUI({
+    validate(need(!is.null(values$pca), message=""))
+    selectInput('PCA_Y', 'Component on X axis', 
+                c('PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6', 'PC7', 'PC8', 'PC9', 'PC10'),
+                selected = 'PC2')
+  })
   # PCA of all RNAseq experiments
   output$allexpt_PCA <- renderPlot({
     RNAseq_panel3_mx <- values$RNAseq_panel3_mx
@@ -358,10 +370,10 @@ shinyServer(function(input, output) {
     pca_df <- cbind(pca_df, values$exptsheet_subset)
     
     if(is.numeric(pca_df[[colorvar]])==T){
-      ggplot(pca_df, aes_string(x="PC1", y="PC2", color=colorvar))+theme_bw()+geom_point(size=3)+
+      ggplot(pca_df, aes_string(x=input$PCA_X, y=input$PCA_Y, color=colorvar))+theme_bw()+geom_point(size=3)+
         scale_color_gradientn(colours = rainbow(5))
     }else{
-      ggplot(pca_df, aes_string(x="PC1", y="PC2", color=colorvar))+theme_bw()+geom_point(size=3)
+      ggplot(pca_df, aes_string(x=input$PCA_X, y=input$PCA_Y, color=colorvar))+theme_bw()+geom_point(size=3)
     }
     
   })

@@ -126,6 +126,8 @@ shinyUI(fluidPage(
                     column(width=6,
                       tags$p("Principal Component plot showing each experiment as a point along the top two components. "),
                       uiOutput('PCA_color_selector'),
+                      uiOutput('PCA_x_selector'),
+                      uiOutput('PCA_y_selector'),
                       plotOutput('allexpt_PCA'),
                       plotOutput('PCA_screeplot')
                     )
