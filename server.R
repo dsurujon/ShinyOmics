@@ -4,6 +4,8 @@ library(visNetwork)
 library(igraph)
 library(colorspace)
 library(shiny)
+library(heatmaply)
+library(shinyHeatmaply)
 
 source('./scripts/make_RNAseq_longtable.R')
 source('./scripts/get_ci.R')
@@ -313,22 +315,52 @@ shinyServer(function(input, output) {
     }
   })
   
-  # heatmap of all RNAseq experiments
+  # static heatmap of all RNAseq experiments
   output$allexpt_heatmap <- renderPlot({
+    
     RNAseq_panel3_mx <- values$RNAseq_panel3_mx
 
     # get rid of NA
     for(i in 1:ncol(RNAseq_panel3_mx)){
       RNAseq_panel3_mx[is.na(RNAseq_panel3_mx[,i]), i] <- mean(RNAseq_panel3_mx[,i], na.rm = TRUE)
     }
-    RNAseq_panel3_mx_subset <- RNAseq_panel3_mx[row.names(RNAseq_panel3_mx) %in% values$geneselection_panel3,]
+    # set colors
+    mypal <- colorRampPalette(brewer.pal(11,input$heatmap_colors))(21)
+    values$mypal <- mypal
+    maxval <- max(abs(RNAseq_panel3_mx))
+    mybreaks <- seq(-maxval, maxval, length.out=22)
+    
+    values$RNAseq_panel3_mx <- RNAseq_panel3_mx
     isClustered <- input$heatmapDendro
+
     if (isClustered){
-      heatmap(RNAseq_panel3_mx_subset, na.rm=T, col = diverge_hsv(50), scale="none", margins = c(5,10))
+      p<-heatmap(RNAseq_panel3_mx, na.rm=T, col = mypal, breaks = mybreaks, scale="none", margins = c(5,10))
     }else{
-      heatmap(RNAseq_panel3_mx_subset, Rowv = NA, Colv = NA, na.rm=T, col = diverge_hsv(50), scale="none", margins = c(5,10))
-      
+      p<-heatmap(RNAseq_panel3_mx, Rowv = NA, Colv = NA, na.rm=T, col = mypal, breaks = mybreaks, scale="none", margins = c(5,10))
     }
+    values$Heatmap_plot <- p
+    p
+  })
+  
+  
+  #interactive heatmap with gene selection
+  output$allexpt_interactive_heatmap <- renderPlotly({
+    
+    if (input$interactive_heatmap){
+      RNAseq_panel3_mx <- values$RNAseq_panel3_mx
+      NAseq_panel3_mx_subset <- RNAseq_panel3_mx[row.names(RNAseq_panel3_mx) %in% values$geneselection_panel3,]
+      maxval <- max(abs(RNAseq_panel3_mx))
+      
+      isClustered <- input$heatmapDendro
+      if (isClustered){
+        heatmaply(NAseq_panel3_mx_subset, colors = values$mypal, limits = c(-maxval, maxval))
+      }else{
+        heatmaply(NAseq_panel3_mx_subset, colors = values$mypal, limits = c(-maxval, maxval), dendrogram="none")
+      }
+      
+    }else{return(NULL)}
+
+    
   })
   
   output$panel3download <- downloadHandler(
@@ -381,19 +413,19 @@ shinyServer(function(input, output) {
   
   ## PLOT DOWNLOADS (png, svg, pdf)
   output$downloadPlot_Panel3PCA_png <- downloadHandler(
-    filename = function() { paste0(input$strain_panel3, '.png') },
+    filename = function() { paste0(input$strain_panel3, '_PCA.png') },
     content = function(file) {
       ggsave(file, plot = values$PCA_plot, device = "png")
     }
   )
   output$downloadPlot_Panel3PCA_svg <- downloadHandler(
-    filename = function() { paste0(input$strain_panel3, '.svg') },
+    filename = function() { paste0(input$strain_panel3, '_PCA.svg') },
     content = function(file) {
       ggsave(file, plot = values$PCA_plot, device = "svg")
     }
   )
   output$downloadPlot_Panel3PCA_pdf <- downloadHandler(
-    filename = function() { paste0(input$strain_panel3, '.pdf') },
+    filename = function() { paste0(input$strain_panel3, '_PCA.pdf') },
     content = function(file) {
       ggsave(file, plot = values$PCA_plot, device = "pdf")
     }
