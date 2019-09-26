@@ -46,7 +46,7 @@ The scatter plot on the right side can be used to explore how network characteri
 
 
 ## Running the app locally
-To run this app locally, you will need [R](https://www.r-project.org/), [RStudio](https://www.rstudio.com/products/rstudio/download/) and a few package dependencies. The required packages are ```ggplot2```, ```visNetwork```, ```igraph```, ```colorspace```, and ```shiny```. To install any of these packages, use the following command in RStudio (once for each package):    
+To run this app locally, you will need [R](https://www.r-project.org/), [RStudio](https://www.rstudio.com/products/rstudio/download/) and a few package dependencies. The required packages are ```ggplot2```, ```visNetwork```, ```igraph```, ```colorspace```, ```heatmaply```, ```shinyHeatmaply```, and ```shiny```. To install any of these packages, use the following command in RStudio (once for each package):    
 ```install.packages('shiny')```    
 With ```server.R``` open in RStudio, hit the "Run App" button on the upper right corner.     
     
