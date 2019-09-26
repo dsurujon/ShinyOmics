@@ -174,8 +174,11 @@ shinyServer(function(input, output) {
     metacols <- names(metadata)[names(metadata)!="Gene"]
     values$metacols_double <- metacols
     
-    RNAdata1<-merge(RNAdata1, metadata, by="Gene", all.x=T, all.y=F, sort=F)
-    RNAdata <- merge(RNAdata1, RNAdata2, by=c("Gene","Time"), suffixes = c(".x",".y"), all.x=T, all.y=T)
+    RNAdata <- merge(RNAdata1[,c('Gene','Time','log2FoldChange','padj')],
+                     RNAdata2[,c('Gene','Time','log2FoldChange','padj')],
+                     by=c('Gene', 'Time'), suffixes = c(".x",".y"), all.x=T, all.y=T)
+    RNAdata <- merge(RNAdata, metadata, by='Gene', all.x=T, all.y=F, sort=F)
+    
     names(RNAdata) <- make.names(names(RNAdata), unique=T)
     
     values$RNAdata_double <- RNAdata
