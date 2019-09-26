@@ -129,6 +129,11 @@ shinyUI(fluidPage(
                       uiOutput('PCA_x_selector'),
                       uiOutput('PCA_y_selector'),
                       plotOutput('allexpt_PCA'),
+                      fluidRow(
+                        downloadButton('downloadPlot_Panel3PCA_png', 'Download plot (png)'),
+                        downloadButton('downloadPlot_Panel3PCA_svg', 'Download plot (svg)'),
+                        downloadButton('downloadPlot_Panel3PCA_pdf', 'Download plot (pdf)')
+                      ),
                       plotOutput('PCA_screeplot')
                     )
 

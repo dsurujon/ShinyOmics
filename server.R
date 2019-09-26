@@ -370,13 +370,35 @@ shinyServer(function(input, output) {
     pca_df <- cbind(pca_df, values$exptsheet_subset)
     
     if(is.numeric(pca_df[[colorvar]])==T){
-      ggplot(pca_df, aes_string(x=input$PCA_X, y=input$PCA_Y, color=colorvar))+theme_bw()+geom_point(size=3)+
+      p <- ggplot(pca_df, aes_string(x=input$PCA_X, y=input$PCA_Y, color=colorvar))+theme_bw()+geom_point(size=3)+
         scale_color_gradientn(colours = rainbow(5))
     }else{
-      ggplot(pca_df, aes_string(x=input$PCA_X, y=input$PCA_Y, color=colorvar))+theme_bw()+geom_point(size=3)
+      p <- ggplot(pca_df, aes_string(x=input$PCA_X, y=input$PCA_Y, color=colorvar))+theme_bw()+geom_point(size=3)
     }
-    
+    values$PCA_plot <- p
+    p
   })
+  
+  ## PLOT DOWNLOADS (png, svg, pdf)
+  output$downloadPlot_Panel3PCA_png <- downloadHandler(
+    filename = function() { paste0(input$strain_panel3, '.png') },
+    content = function(file) {
+      ggsave(file, plot = values$PCA_plot, device = "png")
+    }
+  )
+  output$downloadPlot_Panel3PCA_svg <- downloadHandler(
+    filename = function() { paste0(input$strain_panel3, '.svg') },
+    content = function(file) {
+      ggsave(file, plot = values$PCA_plot, device = "svg")
+    }
+  )
+  output$downloadPlot_Panel3PCA_pdf <- downloadHandler(
+    filename = function() { paste0(input$strain_panel3, '.pdf') },
+    content = function(file) {
+      ggsave(file, plot = values$PCA_plot, device = "pdf")
+    }
+  )
+  
   #scree plot
   output$PCA_screeplot <- renderPlot({
     pca <- values$pca
