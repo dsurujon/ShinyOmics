@@ -2,7 +2,7 @@
 library(ggplot2)
 library(visNetwork)
 library(igraph)
-library(colorspace)
+library(RColorBrewer)
 library(shiny)
 library(heatmaply)
 library(shinyHeatmaply)
@@ -10,17 +10,32 @@ library(shinyHeatmaply)
 source('./scripts/make_RNAseq_longtable.R')
 source('./scripts/get_ci.R')
 source('./scripts/make_node_table.R')
+source('./scripts/files_validator.R')
+
+
 exptsheet<-read.csv('./data/exptsheet.csv', header=T, stringsAsFactors = F)
 
 
 # Define server logic 
 shinyServer(function(input, output) {
+  
+  validation <- files_validator()
+  for (msg in validation){
+    showNotification(msg, type="error", duration=0)
+  }
+  if (length(validation)>0){
+    isvalidated <- FALSE
+  }else{
+    isvalidated <- TRUE
+    showNotification("File Validation Step Passed!", type="message", duration=0)
+    }
+  
   values <- reactiveValues()
   #############
   ## Panel 1 ##
   #############
   # Get RNAseq data associated with the selected experiment
-  observe({
+  panel1observer <- observe({
     thisexpt <- input$expt_single
     RNAdata <- make_RNAseq_longtable(exptsheet, thisexpt)
     metafile <- exptsheet$MetadataFile[exptsheet$Experiment==thisexpt][1]
@@ -37,10 +52,11 @@ shinyServer(function(input, output) {
     }
     #print(names(RNAdata))
     values$RNAdata_single <- RNAdata
-  })
+  }, suspended=T)
+  
   
   # get uploaded gene selection
-  observe({
+  panel1observer2 <- observe({
     infile<-input$findgenes_single
     if (infile==""){
       values$geneselection_single <- values$RNAdata_single[,'Gene']}
@@ -48,7 +64,7 @@ shinyServer(function(input, output) {
       genes <- unlist(strsplit(infile,'\n'))
       values$geneselection_single<-genes
     }
-  })
+  }, suspended=T)
   
   # make the variable selector for the x axis based on metadata table
   output$xaxis_selector_single <- renderUI({
@@ -77,7 +93,7 @@ shinyServer(function(input, output) {
     
     df <- values$RNAdata_single
     
-    df <- df[!is.na(df$log2FoldChange) & !is.na(df[myaxis]) & 
+    df <- df[!is.na(df$Value) & !is.na(df[myaxis]) & 
                df$Gene %in% values$geneselection_single & 
                df$Time %in% timepoints_to_use,]
     
@@ -85,13 +101,13 @@ shinyServer(function(input, output) {
     myalpha <- 1-input$alpha_single
     
     if(input$jitter_single){
-      p=ggplot(df, aes_string(x=myaxis, y="log2FoldChange"))+geom_jitter(width=0.2, height=0, alpha=myalpha, aes(color=Sig))+
+      p=ggplot(df, aes_string(x=myaxis, y="Value"))+geom_jitter(width=0.2, height=0, alpha=myalpha, aes(color=Sig))+
         labs(x=myaxis,y="DE")+facet_grid(.~Time)+
         boolScale+theme_classic()+
         theme(axis.text.x=element_text(angle=45,hjust=1))
       
     }else{
-      p=ggplot(df, aes_string(x=myaxis, y="log2FoldChange"))+geom_point(alpha=myalpha, aes(color=Sig))+
+      p=ggplot(df, aes_string(x=myaxis, y="Value"))+geom_point(alpha=myalpha, aes(color=Sig))+
         labs(x=myaxis,y="DE")+facet_grid(.~Time)+
         boolScale+theme_classic()+
         theme(axis.text.x=element_text(angle=45,hjust=1))
@@ -133,9 +149,9 @@ shinyServer(function(input, output) {
   output$brushedTable_single <- renderDataTable({
     df <- values$RNAdata_single
     myaxis = selectedaxis_single()
-    df <- df[!is.na(df$log2FoldChange) & !is.na(df[myaxis]) & 
+    df <- df[!is.na(df$Value) & !is.na(df[myaxis]) & 
                df$Gene %in% values$geneselection_single,]
-    values$RNAdata_single_DL <- brushedPoints(df,input$plot1_brush, allRows=F, xvar = selectedaxis_single(), yvar="log2FoldChange")
+    values$RNAdata_single_DL <- brushedPoints(df,input$plot1_brush, allRows=F, xvar = selectedaxis_single(), yvar="Value")
   })
   
   #List of brushed genes
@@ -157,7 +173,7 @@ shinyServer(function(input, output) {
   #############
   ## Panel 2 ##
   #############
-  observe({
+  panel2observer <- observe({
     thisexpt1 <- input$expt1
     thisexpt2 <- input$expt2
     
@@ -167,6 +183,7 @@ shinyServer(function(input, output) {
     values$Panel2_samestrain <- metafile1==metafile2
     
     commontimepoints <- intersect(exptsheet$Time[exptsheet$Experiment==thisexpt1],exptsheet$Time[exptsheet$Experiment==thisexpt2])
+    values$Panel2_commontime <- length(commontimepoints)>0
     
     RNAdata1 <- make_RNAseq_longtable(exptsheet[exptsheet$Time %in% commontimepoints,], thisexpt1)
     RNAdata2 <- make_RNAseq_longtable(exptsheet[exptsheet$Time %in% commontimepoints,], thisexpt2)
@@ -176,15 +193,15 @@ shinyServer(function(input, output) {
     metacols <- names(metadata)[names(metadata)!="Gene"]
     values$metacols_double <- metacols
     
-    RNAdata <- merge(RNAdata1[,c('Gene','Time','log2FoldChange','padj')],
-                     RNAdata2[,c('Gene','Time','log2FoldChange','padj')],
+    RNAdata <- merge(RNAdata1[,c('Gene','Time','Value','Sig')],
+                     RNAdata2[,c('Gene','Time','Value','Sig')],
                      by=c('Gene', 'Time'), suffixes = c(".x",".y"), all.x=T, all.y=T)
     RNAdata <- merge(RNAdata, metadata, by='Gene', all.x=T, all.y=F, sort=F)
     
     names(RNAdata) <- make.names(names(RNAdata), unique=T)
     
     values$RNAdata_double <- RNAdata
-  })
+  }, suspended = T)
   
   
   # make the variable selector for the color based on metadata table
@@ -199,7 +216,7 @@ shinyServer(function(input, output) {
   })
   
   # get uploaded gene selection
-  observe({
+  panel2observer2 <- observe({
     infile<-input$findgenes_double
     if (infile==""){
       values$geneselection_double <- values$RNAdata_double[,'Gene']}
@@ -207,25 +224,26 @@ shinyServer(function(input, output) {
       genes <- unlist(strsplit(infile,'\n'))
       values$geneselection_double<-genes
     }
-  })
+  }, suspended=T)
   
   # plot output
   output$TIGdoubleplot <- renderPlot({
     validate(need(values$Panel2_samestrain==T, message="Two experiments must come from the same organism/strain"))
+    validate(need(values$Panel2_commontime==T, message="Two experiments must have common timepoints"))
     validate(need(!is.null(values$RNAdata_double), message="Waiting for datasets to be loaded..."),
              need(!is.null(input$color_plot2), message="Waiting for datasets to be loaded..."))
     timepoints_to_use <- input$timepoints_double
     
     df <- values$RNAdata_double
-    df <- df[!is.na(df$log2FoldChange.x) & !is.na(df$log2FoldChange.y) & 
+    df <- df[!is.na(df$Value.x) & !is.na(df$Value.y) & 
                df$Gene %in% values$geneselection_double & 
-               df$Time %in% timepoints_to_use,]
+               as.numeric(df$Time) %in% as.numeric(timepoints_to_use),]
     #values$RNAdata_double <- df
     
     colorvar <- input$color_plot2
     
-    p <- ggplot(df, aes(x=log2FoldChange.x, y=log2FoldChange.y))+geom_point(alpha=0.3, aes_string(color=colorvar))+
-      labs(x='DE- Experiment1',y='DE - Experiment2')+facet_grid(.~Time)+
+    p <- ggplot(df, aes(x=Value.x, y=Value.y))+geom_point(alpha=0.3, aes_string(color=colorvar))+
+      labs(x='Value - Experiment1',y='Value - Experiment2')+facet_grid(.~Time)+
       theme_classic()
     
     values$plot_Panel2 <- p
@@ -255,9 +273,9 @@ shinyServer(function(input, output) {
   # brushed table output
   output$brushedTable_double <- renderDataTable({
     df <- values$RNAdata_double
-    df <- df[!is.na(df$log2FoldChange.x) & !is.na(df$log2FoldChange.y) & 
+    df <- df[!is.na(df$Value.x) & !is.na(df$Value.y) & 
                df$Gene %in% values$geneselection_double,]
-    values$RNAdata_double_DL <- brushedPoints(df,input$plot2_brush, allRows=F, xvar = "log2FoldChange.x", yvar="log2FoldChange.y")
+    values$RNAdata_double_DL <- brushedPoints(df,input$plot2_brush, allRows=F, xvar = "Value.x", yvar="Value.y")
   })
   #List of brushed genes
   output$brushedGenes_double <- renderText({
@@ -279,7 +297,7 @@ shinyServer(function(input, output) {
   #############
   
   #make combined RNAseq table
-  observe({
+  panel3observer <- observe({
     thisstrain <- input$strain_panel3
     metafile <- exptsheet$MetadataFile[exptsheet$Strain==thisstrain][1]
     metadata <- read.csv(metafile, header=T, stringsAsFactors = F)
@@ -290,9 +308,9 @@ shinyServer(function(input, output) {
     values$exptsheet_subset <- exptsheet_subset
     RNAseq_panel3 <- metadata
     for (i in c(1:nrow(exptsheet_subset))){
-      thisRNAfile <- read.csv(exptsheet_subset$DEseqFile[i], header=T, stringsAsFactors = F)
-      thisRNAfile <- thisRNAfile[,c('Gene', 'log2FoldChange')]
-      thisRNAfile$log2FoldChange <- as.numeric(as.character(thisRNAfile$log2FoldChange))
+      thisRNAfile <- read.csv(exptsheet_subset$DataFile[i], header=T, stringsAsFactors = F)
+      thisRNAfile <- thisRNAfile[,c('Gene', 'Value')]
+      thisRNAfile$Value <- as.numeric(as.character(thisRNAfile$Value))
       names(thisRNAfile)[2] <- exptsheet_subset$Name[i]
       RNAseq_panel3 <- merge(RNAseq_panel3, thisRNAfile, by = "Gene", all.x=T, all.y=F, sort=F)
     }
@@ -302,10 +320,10 @@ shinyServer(function(input, output) {
     row.names(RNAseq_panel3_mx) <- RNAseq_panel3$Gene
     
     values$RNAseq_panel3_mx <- RNAseq_panel3_mx
-  })
+  }, suspended=T)
   
   # get uploaded gene selection
-  observe({
+  panel3observer2 <- observe({
     infile<-input$findgenes_panel3
     if (infile==""){
       values$geneselection_panel3<-values$RNAseq_panel3[,'Gene']}
@@ -313,7 +331,7 @@ shinyServer(function(input, output) {
       genes <- unlist(strsplit(infile,'\n'))
       values$geneselection_panel3<-genes
     }
-  })
+  }, suspended = T)
   
   # static heatmap of all RNAseq experiments
   output$allexpt_heatmap <- renderPlot({
@@ -483,7 +501,7 @@ shinyServer(function(input, output) {
   })
   
   #load RNAseq data
-  observe({
+  panel4observer <- observe({
     thisexpt <- input$network_experiment
     thistime <- input$networkdatatime
     RNAdata <- make_RNAseq_longtable(exptsheet, thisexpt)
@@ -502,7 +520,7 @@ shinyServer(function(input, output) {
     }
     #print(names(RNAdata))
     values$RNAdata_network <- RNAdata
-  })
+  }, suspended = T)
   
   # network plot
   output$networkplot <- renderVisNetwork({
@@ -519,9 +537,9 @@ shinyServer(function(input, output) {
     
     ## NETWORK LABELS & COLORS
     df$group[df$Sig & !is.na(df$Sig) & 
-               df$log2FoldChange>1 & !is.na(df$log2FoldChange)] = "upSIG"
+               df$Value>1 & !is.na(df$Value)] = "upSIG"
     df$group[df$Sig & !is.na(df$Sig) & 
-               df$log2FoldChange< -1 & !is.na(df$log2FoldChange)] = "downSIG"
+               df$Value< -1 & !is.na(df$Value)] = "downSIG"
     
     df <- unique(df)
     values$networkdf <- df
@@ -601,4 +619,16 @@ shinyServer(function(input, output) {
       write.csv(values$networkdf_DL, file)
     } 
   )
+  
+  
+  if(isvalidated){
+    panel1observer$resume()
+    panel1observer2$resume()
+    panel2observer$resume()
+    panel2observer2$resume()
+    panel3observer$resume()
+    panel3observer2$resume()
+    panel4observer$resume()
+    }
+  
 })

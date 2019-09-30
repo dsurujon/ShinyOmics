@@ -9,6 +9,7 @@
 
 library(shiny)
 library(visNetwork)
+library(shinyHeatmaply)
 
 exptsheet<-read.csv('./data/exptsheet.csv', header=T, stringsAsFactors = F)
 
