@@ -8,6 +8,8 @@ There are 4 panels that allow for different types of data exploration:
 * **Compare 2 Experiments:** plot DE from one experiment against the DE in another experiment (e.g. to answer whether two antibiotics trigger similar responses, plot T4_PEN against T4_VNC)
 * **Compare All Experiments:** Use a heatmap and PCA to see if there are groups of highly similar experiments 
 * **Network:** Overlay significant expression changes on a network, compare network characteristics (e.g. degree) to gene data (e.g. DE or other metadata)    
+    
+    
 Before the app attempts any data processing, it will check whether all files are correctly formatted. If there are issues, it will display error messages informing the user what the problem is. Otherwise, it will display a message saying the validation step was passed without issues    
 ![Validation Example](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/EFREHPJ1WpI0TXF/Pasted%20Image%3A%20Sep%2030%2C%202019%20-%205%3A36%3A03pm)    
 
