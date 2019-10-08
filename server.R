@@ -40,6 +40,7 @@ shinyServer(function(input, output) {
     RNAdata <- make_RNAseq_longtable(exptsheet, thisexpt)
     metafile <- exptsheet$MetadataFile[exptsheet$Experiment==thisexpt][1]
     metadata <- read.csv(metafile, header=T, stringsAsFactors = F)
+    values$metadata_single <- metadata
     metacols <- names(metadata)[names(metadata)!="Gene"]
     values$metacols_single <- metacols
     # merge RNAseq data with metadata
@@ -57,18 +58,62 @@ shinyServer(function(input, output) {
   
   # get uploaded gene selection
   panel1observer2 <- observe({
+    metadata <- values$metadata_single
+    myvarname <- input$metadata_variable_single
     infile<-input$findgenes_single
+    #if there is no list pasted, check if the user has selected genes from metadata
     if (infile==""){
-      values$geneselection_single <- values$RNAdata_single[,'Gene']}
+      if (input$filter_metadata_panel1 & !is.null(input$metadata_value_selection_single)){
+        #print('selecting by metadata')
+        if(values$meta_selector_single_isnumeric){
+          slidervalues <- input$metadata_value_selection_single
+          #print(slidervalues)
+          geneselection <- metadata$Gene[metadata[[myvarname]]>slidervalues[1] & 
+                                           metadata[[myvarname]]<slidervalues[2]]
+        }else{
+          #print('select from nonnumeric')
+          geneselection <- metadata$Gene[metadata[[myvarname]]==input$metadata_value_selection_single]
+        }
+        values$geneselection_single <- geneselection
+      }else{
+        #print('retrieving all genes')
+        values$geneselection_single <- values$RNAdata_single[,'Gene']
+      }
+      }
     else{
       genes <- unlist(strsplit(infile,'\n'))
       values$geneselection_single<-genes
     }
   }, suspended=T)
   
+  #gene selection based on metadata - select which variable
+  output$metadata_selector_single <- renderUI({
+    values$meta_selector_single_isnumeric <- NULL
+    if(input$filter_metadata_panel1){
+      selectInput('metadata_variable_single', 'Variable for gene selection', values$metacols_single)
+    }
+  })
+  #metadata variable to use as gene selector
+  output$metadata_selector_value_single <- renderUI({
+    validate(need(!is.null(input$metadata_variable_single),message="There needs to be at least one metadata variable for gene selection"))
+    if(input$filter_metadata_panel1){
+      myvarname <- input$metadata_variable_single
+      metadata <- values$metadata_single
+      myvar <- metadata[[myvarname]]
+
+      if(is.numeric(myvar)){
+        values$meta_selector_single_isnumeric <- TRUE
+        sliderInput('metadata_value_selection_single', label=myvarname, min=min(myvar), max=max(myvar), value=c(min(myvar), max(myvar)))
+      }else{
+        values$meta_selector_single_isnumeric <- FALSE
+        selectInput('metadata_value_selection_single', label=myvarname, unique(myvar))
+      }
+    }
+  })
+  
   # make the variable selector for the x axis based on metadata table
   output$xaxis_selector_single <- renderUI({
-    selectInput('xaxis_variable', 'Variable', values$metacols_single)
+    selectInput('xaxis_variable', 'X-axis variable', values$metacols_single)
   })
   
   # make a selector for the timepoints to display
@@ -90,7 +135,9 @@ shinyServer(function(input, output) {
     timepoints_to_use <- input$timepoints_single
     validate(need(nrow(values$RNAdata_single)>0, message="Waiting for datasets to be loaded..."),
              need(!is.null(myaxis), message="Waiting for datasets to be loaded..."))
-    
+    if(input$filter_metadata_panel1){
+      validate(need(!is.null(input$metadata_variable_single),message="Loading plot"))
+    }
     df <- values$RNAdata_single
     
     df <- df[!is.na(df$Value) & !is.na(df[myaxis]) & 
@@ -190,6 +237,7 @@ shinyServer(function(input, output) {
     
     metafile <- exptsheet$MetadataFile[exptsheet$Experiment==thisexpt1][1]
     metadata <- read.csv(metafile, header=T, stringsAsFactors = F)
+    values$metadata_double <- metadata
     metacols <- names(metadata)[names(metadata)!="Gene"]
     values$metacols_double <- metacols
     
@@ -217,14 +265,59 @@ shinyServer(function(input, output) {
   
   # get uploaded gene selection
   panel2observer2 <- observe({
+    metadata <- values$metadata_double
+    myvarname <- input$metadata_variable_double
     infile<-input$findgenes_double
+    #if there is no list pasted, check if the user has selected genes from metadata
     if (infile==""){
-      values$geneselection_double <- values$RNAdata_double[,'Gene']}
+      if (input$filter_metadata_panel2 & !is.null(input$metadata_value_selection_double)){
+        #print('selecting by metadata')
+        if(values$meta_selector_double_isnumeric){
+          slidervalues <- input$metadata_value_selection_double
+          #print(slidervalues)
+          geneselection <- metadata$Gene[metadata[[myvarname]]>slidervalues[1] & 
+                                           metadata[[myvarname]]<slidervalues[2]]
+        }else{
+          #print('select from nonnumeric')
+          geneselection <- metadata$Gene[metadata[[myvarname]]==input$metadata_value_selection_double]
+        }
+        values$geneselection_double <- geneselection
+      }else{
+        #print('retrieving all genes')
+        values$geneselection_double <- values$RNAdata_double[,'Gene']
+      }
+    }
     else{
       genes <- unlist(strsplit(infile,'\n'))
       values$geneselection_double<-genes
     }
   }, suspended=T)
+  
+  #gene selection based on metadata - select which variable
+  output$metadata_selector_double <- renderUI({
+    values$meta_selector_double_isnumeric <- NULL
+    if(input$filter_metadata_panel2){
+      selectInput('metadata_variable_double', 'Variable for gene selection', values$metacols_double)
+    }
+  })
+  #metadata variable to use as gene selector
+  output$metadata_selector_value_double <- renderUI({
+    validate(need(!is.null(input$metadata_variable_double),message="There needs to be at least one metadata variable for gene selection"))
+    if(input$filter_metadata_panel2){
+      myvarname <- input$metadata_variable_double
+      metadata <- values$metadata_double
+      myvar <- metadata[[myvarname]]
+      
+      if(is.numeric(myvar)){
+        values$meta_selector_double_isnumeric <- TRUE
+        sliderInput('metadata_value_selection_double', label=myvarname, min=min(myvar), max=max(myvar), value=c(min(myvar), max(myvar)))
+      }else{
+        values$meta_selector_double_isnumeric <- FALSE
+        selectInput('metadata_value_selection_double', label=myvarname, unique(myvar))
+      }
+    }
+  })
+  
   
   # plot output
   output$TIGdoubleplot <- renderPlot({
@@ -232,6 +325,9 @@ shinyServer(function(input, output) {
     validate(need(values$Panel2_commontime==T, message="Two experiments must have common timepoints"))
     validate(need(!is.null(values$RNAdata_double), message="Waiting for datasets to be loaded..."),
              need(!is.null(input$color_plot2), message="Waiting for datasets to be loaded..."))
+    if(input$filter_metadata_panel2){
+      validate(need(!is.null(input$metadata_variable_double),message="Loading plot"))
+    }
     timepoints_to_use <- input$timepoints_double
     
     df <- values$RNAdata_double
@@ -557,10 +653,13 @@ shinyServer(function(input, output) {
                                          outline:none;'),
                  highlightNearest = list(enabled =TRUE, degree = 1, hover = T))%>%
       visGroups(groupname = "upSIG", color = "red") %>%
-      visGroups(groupname = "downSIG", color = "blue")
+      visGroups(groupname = "downSIG", color = "blue") %>% 
+      visExport(type = "png", name = "Network",
+                float = "left", label = "Save network (png)", background = "white", style= "") 
     
     
   })
+
   
   output$networkx_selector <- renderUI({
     selectInput('networkstats_x', 'X axis variable', 
@@ -588,6 +687,7 @@ shinyServer(function(input, output) {
   output$networkstatsplot <- renderPlot({
     df <- values$networkdf
     axisvars <- get_networkstats_axis_vars()
+    
     myxaxis <- axisvars$xaxisvar
     myyaxis <- axisvars$yaxisvar
     mycolor <- axisvars$colorvar
@@ -600,8 +700,31 @@ shinyServer(function(input, output) {
     if(input$showviolins_net){p = p+#geom_violin(trim=FALSE)+ 
       stat_summary(fun.data=get_ci, conf.int=0.95, B=100, 
                    geom="pointrange", color="red")}
+    
+    values$Panel4_scatter <- p
+    
     return(p)
   })
+  
+  ## PLOT DOWNLOADS (png, svg, pdf)
+  output$downloadPlot_Panel4_png <- downloadHandler(
+    filename = function() { paste0(input$network_selector,"_",input$network_experiment,"_",input$networkdatatime, '.png') },
+    content = function(file) {
+      ggsave(file, plot = values$Panel4_scatter, device = "png")
+    }
+  )
+  output$downloadPlot_Panel4_svg <- downloadHandler(
+    filename = function() { paste0(input$network_selector,"_",input$network_experiment,"_",input$networkdatatime, '.svg') },
+    content = function(file) {
+      ggsave(file, plot = values$Panel4_scatter, device = "svg")
+    }
+  )
+  output$downloadPlot_Panel4_pdf <- downloadHandler(
+    filename = function() { paste0(input$network_selector,"_",input$network_experiment,"_",input$networkdatatime, '.pdf') },
+    content = function(file) {
+      ggsave(file, plot = values$Panel4_scatter, device = "pdf")
+    }
+  )
   
   output$brushedTable_netstats <- renderDataTable({
     axisvars <- get_networkstats_axis_vars()

@@ -31,6 +31,9 @@ shinyUI(fluidPage(
                            selectInput('expt_single', 'Select experiment', unique(exptsheet$Experiment)),
                            textAreaInput('findgenes_single', 'Paste gene list - one gene per row', 
                                          value=""),
+                           checkboxInput('filter_metadata_panel1', 'Select genes by metadata variable',value = FALSE),
+                           uiOutput('metadata_selector_single'),
+                           uiOutput('metadata_selector_value_single'),
                            uiOutput('xaxis_selector_single'),
                            
                            tags$h3("Visualization options"),
@@ -80,7 +83,10 @@ shinyUI(fluidPage(
                            selectInput('expt2','Select Experiment 2',unique(exptsheet$Experiment)),
                            uiOutput('color_selector_panel2'),
                            textAreaInput('findgenes_double', 'Paste gene list - one gene per row', 
-                                         value="")
+                                         value=""),
+                           checkboxInput('filter_metadata_panel2', 'Select genes by metadata variable',value = FALSE),
+                           uiOutput('metadata_selector_double'),
+                           uiOutput('metadata_selector_value_double')
                            ), #column 1: plot options
                     column(width=8,
                            tags$p('Scatter plot of DE from two experiments. Make sure the two experiments are from the same organism. \n Use the brush on the plot to select genes'),
@@ -158,31 +164,41 @@ shinyUI(fluidPage(
          #############
          tabPanel('Network', 
                   fluidRow(),
-                  fluidRow(uiOutput('network_selector'),
-                           selectInput('network_experiment', 'Select Experiment', unique(exptsheet$Experiment)),
-                           uiOutput('network_time_selector')
-                           ),# /fluidRow network selectors
                   fluidRow(
-                    column(width=8,
-                           visNetworkOutput(width=750,
-                                            height=750,
-                                            "networkplot")
-                    ),
-                    column(width=4,
-                           h4("Significant Gene (fold change >2)",style="background-color:	#FF2D00"),
-                           h4("Significant Gene (fold change <0.5)",style="background-color:	#0059FF"),
-                           h4("Selected Gene", style = "background-color:magenta"),
+                    column(width=6,
+                           uiOutput('network_selector'),
+                           selectInput('network_experiment', 'Select Experiment', unique(exptsheet$Experiment)),
+                           uiOutput('network_time_selector'),
+                           h4("Significant Gene (fold change >2)",style="color:	#FF2D00"),
+                           h4("Significant Gene (fold change <0.5)",style="color:	#0059FF"),
+                           h4("Selected Gene", style = "color:magenta")
+                           ),# /network selectors
+                    column(width=6,
                            uiOutput('networkx_selector'),
                            uiOutput('networky_selector'),
                            uiOutput('networkcolor_selector'),
-
+                           
                            checkboxInput('xaxis_log_net', 'log-scale x axis', FALSE),
                            checkboxInput('yaxis_log_net', 'log-scale y axis', FALSE),
-                           checkboxInput("showviolins_net", "Show summary with Mean+-95% CI", FALSE),
-                           plotOutput('networkstatsplot',brush = brushOpts(id="networkstats_brush"))
-                    )
-                    
-                  ),#/fluidRow
+                           checkboxInput("showviolins_net", "Show summary with Mean+-95% CI", FALSE)
+                           
+                           ) # /scatterplot selectors
+                  ),
+                  fluidRow(
+                    column(width=6,
+                           visNetworkOutput("networkplot")
+                           ),
+                    column(width=6,
+                           plotOutput('networkstatsplot',brush = brushOpts(id="networkstats_brush")),
+                           fluidRow(
+                             downloadButton('downloadPlot_Panel4_png', 'Download plot (png)'),
+                             downloadButton('downloadPlot_Panel4_svg', 'Download plot (svg)'),
+                             downloadButton('downloadPlot_Panel4_pdf', 'Download plot (pdf)')
+                           )
+                           )
+                  ),
+                  
+                  
                   fluidRow(
                     downloadButton('panel4download', 'Download Table')
                   ), #/fluidRow for table DL 
