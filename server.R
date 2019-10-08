@@ -232,23 +232,27 @@ shinyServer(function(input, output) {
     commontimepoints <- intersect(exptsheet$Time[exptsheet$Experiment==thisexpt1],exptsheet$Time[exptsheet$Experiment==thisexpt2])
     values$Panel2_commontime <- length(commontimepoints)>0
     
-    RNAdata1 <- make_RNAseq_longtable(exptsheet[exptsheet$Time %in% commontimepoints,], thisexpt1)
-    RNAdata2 <- make_RNAseq_longtable(exptsheet[exptsheet$Time %in% commontimepoints,], thisexpt2)
-    
-    metafile <- exptsheet$MetadataFile[exptsheet$Experiment==thisexpt1][1]
-    metadata <- read.csv(metafile, header=T, stringsAsFactors = F)
-    values$metadata_double <- metadata
-    metacols <- names(metadata)[names(metadata)!="Gene"]
-    values$metacols_double <- metacols
-    
-    RNAdata <- merge(RNAdata1[,c('Gene','Time','Value','Sig')],
-                     RNAdata2[,c('Gene','Time','Value','Sig')],
-                     by=c('Gene', 'Time'), suffixes = c(".x",".y"), all.x=T, all.y=T)
-    RNAdata <- merge(RNAdata, metadata, by='Gene', all.x=T, all.y=F, sort=F)
-    
-    names(RNAdata) <- make.names(names(RNAdata), unique=T)
-    
-    values$RNAdata_double <- RNAdata
+    if (values$Panel2_commontime){
+      RNAdata1 <- make_RNAseq_longtable(exptsheet[exptsheet$Time %in% commontimepoints,], thisexpt1)
+      RNAdata2 <- make_RNAseq_longtable(exptsheet[exptsheet$Time %in% commontimepoints,], thisexpt2)
+      
+      metafile <- exptsheet$MetadataFile[exptsheet$Experiment==thisexpt1][1]
+      metadata <- read.csv(metafile, header=T, stringsAsFactors = F)
+      values$metadata_double <- metadata
+      metacols <- names(metadata)[names(metadata)!="Gene"]
+      values$metacols_double <- metacols
+      
+      RNAdata <- merge(RNAdata1[,c('Gene','Time','Value','Sig')],
+                       RNAdata2[,c('Gene','Time','Value','Sig')],
+                       by=c('Gene', 'Time'), suffixes = c(".x",".y"), all.x=T, all.y=T)
+      RNAdata <- merge(RNAdata, metadata, by='Gene', all.x=T, all.y=F, sort=F)
+      
+      names(RNAdata) <- make.names(names(RNAdata), unique=T)
+      
+      values$RNAdata_double <- RNAdata
+      
+    }
+
   }, suspended = T)
   
   
