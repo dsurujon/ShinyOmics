@@ -3,14 +3,22 @@ make_RNAseq_longtable <- function(exptsheet, thisexpt){
   
   RNAdf <- data.frame()
   for (i in c(1:nrow(exptsubsheet))){
-    thisfile <- exptsubsheet$DEseqFile[i]
+    thisfile <- exptsubsheet$DataFile[i]
     thistime <- exptsubsheet$Time[i]
     f<-read.csv(thisfile, header=T, stringsAsFactors = F)
-    f$log2FoldChange <- as.numeric(as.character(f$log2FoldChange))
-    f$Sig <- !is.na(f$log2FoldChange) & abs(f$log2FoldChange)>1 & 
-      !is.na(f$padj) & f$padj < 0.05
+    f$Value <- as.numeric(as.character(f$Value))
     f$Time <- thistime
-    RNAdf <- rbind(RNAdf, f[,c('Gene', 'log2FoldChange', 'padj', 'Sig', 'Time')])
+    
+    if ('Sig' %in% names(f)){
+      f$Sig <- as.logical(f$Sig)
+      RNAdf <- rbind(RNAdf, f[,c('Gene', 'Value', 'Sig', 'Time')])
+      
+    }else{
+      f$Sig <- !is.na(f$Value) & abs(f$Value)>1 & 
+        !is.na(f$padj) & f$padj < 0.05
+      RNAdf <- rbind(RNAdf, f[,c('Gene', 'Value', 'padj', 'Sig', 'Time')])
+    }
+
     
   }
   return(RNAdf)
