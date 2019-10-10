@@ -3,13 +3,13 @@
 ShinyOmics User Guide
 -----------------------------------------
 
-This app allows exploratory data analysis on any 'Omics' dataset, e.g. Transcriptomics, proteomics, phenotypic screens. It comes with pre-loaded datasets from the human pathogens *Streptococcus pneumoniae* and *Mycobacterium tuberculosis*. The *S. pneumoniae* set includes RNA-Seq and Tn-seq data from Zhu et al 2019 *(under review)* where two strains (19F and T4) were treated with 3 different antibiotics (VNC, RIF, PEN). The *M. tuberculosis* datasets are microarray and proteomic screens under hypoxic conditions from [Galagan et al., 2013](https://www.nature.com/articles/nature12337) and [Schubert et al., 2015](https://www.sciencedirect.com/science/article/pii/S193131281500222X) respectively. To access the app with this example dataset, visit http://bioinformatics.bc.edu/shiny/ShinyOmics/
+This app allows exploratory data analysis on any 'Omics' dataset, e.g. Transcriptomics, proteomics, phenotypic screens. It comes with pre-loaded datasets from the human pathogens *Streptococcus pneumoniae* and *Mycobacterium tuberculosis*. The *S. pneumoniae* set includes RNA-Seq and Tn-seq data from Zhu et al 2019 *(under review)* where two strains (19F and T4) were treated with 5 different antibiotics (KAN, LVX, VNC, RIF, PEN). The *M. tuberculosis* datasets are microarray and proteomic screens under hypoxic conditions from [Galagan et al., 2013](https://www.nature.com/articles/nature12337) and [Schubert et al., 2015](https://www.sciencedirect.com/science/article/pii/S193131281500222X) respectively. To access the app with this example dataset, visit http://bioinformatics.bc.edu/shiny/ShinyOmics/
 
 There are 4 panels that allow for different types of data exploration: 
-* **Single Experiment:** plot differential expression (DE) against any other metadata associated with genes (e.g. to answer whether essential genes are more downregulated, we can select Essentiality as the x-axis metadata variable)
-* **Compare 2 Experiments:** plot DE from one experiment against the DE in another experiment (e.g. to answer whether two antibiotics trigger similar responses, plot T4_PEN against T4_VNC)
+* **Single Experiment:** plot experimental value (e.g. differential expression (DE), change in fitness (dW)) of all genes against any other metadata associated with genes (e.g. to answer whether essential genes are more downregulated, we can select Essentiality as the x-axis metadata variable)
+* **Compare 2 Experiments:** plot gene value (DE, dW, etc.) from one experiment against the value in another experiment (e.g. to answer whether two antibiotics trigger similar responses, plot T4_PEN against T4_VNC)
 * **Compare All Experiments:** Use a heatmap and PCA to see if there are groups of highly similar experiments 
-* **Network:** Overlay significant expression changes on a network, compare network characteristics (e.g. degree) to gene data (e.g. DE or other metadata)    
+* **Network:** Overlay significant changes on a network, compare network characteristics (e.g. degree) to gene data (e.g. DE or other metadata)    
     
     
 Before the app attempts any data processing, it will check whether all files are correctly formatted. If there are issues, it will display error messages informing the user what the problem is. Otherwise, it will display a message saying the validation step was passed without issues    
