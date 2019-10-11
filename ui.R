@@ -29,12 +29,12 @@ shinyUI(fluidPage(
                   fluidRow(
                     column(width=3, 
                            selectInput('expt_single', 'Select experiment', unique(exptsheet$Experiment)),
+                           uiOutput('xaxis_selector_single'),
                            textAreaInput('findgenes_single', 'Paste gene list - one gene per row', 
                                          value=""),
                            checkboxInput('filter_metadata_panel1', 'Select genes by metadata variable',value = FALSE),
                            uiOutput('metadata_selector_single'),
                            uiOutput('metadata_selector_value_single'),
-                           uiOutput('xaxis_selector_single'),
                            
                            tags$h3("Visualization options"),
                            checkboxInput("jitter_single", "Jitter x axis", FALSE),
