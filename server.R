@@ -213,7 +213,7 @@ shinyServer(function(input, output) {
       paste0(input$expt_single,"_Single_Expt.csv")
     },
     content = function(file){
-      write.csv(values$RNAdata_single_DL, file)
+      write.csv(values$RNAdata_single_DL, file, row.names=F)
     } 
   )
   
@@ -388,7 +388,7 @@ shinyServer(function(input, output) {
       paste0(input$expt1,"_",input$expt2,"_Comparison.csv")
     },
     content = function(file){
-      write.csv(values$RNAdata_double_DL, file)
+      write.csv(values$RNAdata_double_DL, file, row.names=F)
     } 
   )
   
@@ -486,7 +486,7 @@ shinyServer(function(input, output) {
       paste0(input$strain_panel3,"_Allexpts.csv")
     },
     content = function(file){
-      write.csv(values$RNAseq_panel3_mx, file)
+      write.csv(values$RNAseq_panel3_mx, file, row.names=F)
     }
     
   )
@@ -743,7 +743,7 @@ shinyServer(function(input, output) {
       paste0(input$network_experiment, "_",input$networkdatatime ,"_Network.csv")
     },
     content = function(file){
-      write.csv(values$networkdf_DL, file)
+      write.csv(values$networkdf_DL, file, row.names=F)
     } 
   )
   
