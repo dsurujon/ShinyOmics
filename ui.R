@@ -54,7 +54,8 @@ shinyUI(fluidPage(
                            downloadButton('downloadPlot_Panel1_png', 'Download Plot (png)'),
                            downloadButton('downloadPlot_Panel1_svg', 'Download Plot (svg)'),
                            downloadButton('downloadPlot_Panel1_pdf', 'Download Plot (pdf)'),
-                           verbatimTextOutput('brushedGenes_single'),
+                           tags$p('Brushed Genes:'),
+                           verbatimTextOutput('brushedGenes_single', placeholder=TRUE),
                            tags$style("#brushedGenes_single{overflow-y:scroll; max-height: 100px; width: 250px}")
                            
                            )# /column 3: download buttons
@@ -99,7 +100,8 @@ shinyUI(fluidPage(
                            downloadButton('downloadPlot_Panel2_png', 'Download Plot (png)'),
                            downloadButton('downloadPlot_Panel2_svg', 'Download Plot (svg)'),
                            downloadButton('downloadPlot_Panel2_pdf', 'Download Plot (pdf)'),
-                           verbatimTextOutput('brushedGenes_double'),
+                           tags$p('Brushed Genes:'),
+                           verbatimTextOutput('brushedGenes_double', placeholder=TRUE),
                            tags$style("#brushedGenes_double{overflow-y:scroll; max-height: 100px; width: 250px}")
                            
                     )# /column 3: download buttons
