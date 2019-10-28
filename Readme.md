@@ -61,6 +61,9 @@ To run this app locally, we need [R](https://www.r-project.org/), [RStudio](http
 ```install.packages('shiny')```    
 With ```server.R``` open in RStudio, hit the "Run App" button on the upper right corner.     
     
+## Using Shiny Server	
+It is also possible to set up an instance of the application on a webserver. Please refer to the [Shiny Server Documentation](https://shiny.rstudio.com/articles/shiny-server.html) for details on how to host shiny applications. Setting up such a webserver instance *will* make the data publicly available. Therefore, if there are concers about external access to data, ShinyOmics and its accompanying data can be distributed as zipped files, hosted behind firewalls, or the server can be set up with user authentication (which is only possible for Shiny Server Professional subscribers).      
+        
 ## Directory Structure for ShinyOmics
 ![DirectoryStructure](https://contattafiles.s3.us-west-1.amazonaws.com/tnt8877/ifFyurDlypPkfrk/Pasted%20Image%3A%20Oct%208%2C%202019%20-%207%3A01%3A13pm)    
 * All experiments need to be specified in the main experiment sheet, ```exptsheet.csv``` 
