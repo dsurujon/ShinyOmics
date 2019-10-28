@@ -80,8 +80,8 @@ shinyUI(fluidPage(
          tabPanel('Compare 2 Experiments', 
                   fluidRow(
                     column(width=3,
-                           selectInput('expt1','Select Experiment 1',unique(exptsheet$Experiment)),
-                           selectInput('expt2','Select Experiment 2',unique(exptsheet$Experiment)),
+                           selectInput('expt1','Select Experiment 1',unique(exptsheet$Experiment), selected = unique(exptsheet$Experiment)[1]),
+                           selectInput('expt2','Select Experiment 2',unique(exptsheet$Experiment), selected = unique(exptsheet$Experiment)[2]),
                            uiOutput('color_selector_panel2'),
                            textAreaInput('findgenes_double', 'Paste gene list - one gene per row', 
                                          value=""),
