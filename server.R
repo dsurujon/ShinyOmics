@@ -508,6 +508,8 @@ shinyServer(function(input, output) {
   })
   # PCA of all RNAseq experiments
   output$allexpt_PCA <- renderPlot({
+    validate(need(!is.null(values$RNAseq_panel3_mx), message="Waiting for datasets to be loaded..."),
+             need(!is.null(input$PCA_color), message="Waiting for datasets to be loaded..."))
     RNAseq_panel3_mx <- values$RNAseq_panel3_mx
     # get rid of NA
     for(i in 1:ncol(RNAseq_panel3_mx)){
@@ -518,12 +520,19 @@ shinyServer(function(input, output) {
     colorvar <- input$PCA_color
     pca_df <- as.data.frame(pca$x)
     pca_df <- cbind(pca_df, values$exptsheet_subset)
+    if (is.null(input$PCA_X) & is.null(input$PCA_Y)){
+      xvar <- "PC1"
+      yvar <- "PC2"
+    }else{
+      xvar <- input$PCA_X
+      yvar <- input$PCA_Y
+    }
     
     if(is.numeric(pca_df[[colorvar]])==T){
-      p <- ggplot(pca_df, aes_string(x=input$PCA_X, y=input$PCA_Y, color=colorvar))+theme_bw()+geom_point(size=3)+
+      p <- ggplot(pca_df, aes_string(x=xvar, y=yvar, color=colorvar))+theme_bw()+geom_point(size=3)+
         scale_color_gradientn(colours = rainbow(5))
     }else{
-      p <- ggplot(pca_df, aes_string(x=input$PCA_X, y=input$PCA_Y, color=colorvar))+theme_bw()+geom_point(size=3)
+      p <- ggplot(pca_df, aes_string(x=xvar, y=yvar, color=colorvar))+theme_bw()+geom_point(size=3)
     }
     values$PCA_plot <- p
     p
@@ -551,6 +560,7 @@ shinyServer(function(input, output) {
   
   #scree plot
   output$PCA_screeplot <- renderPlot({
+    validate(need(!is.null(values$pca), message=""))
     pca <- values$pca
     myvars <- pca$sdev^2
     vars_pct <- 100*myvars/sum(myvars)
@@ -689,12 +699,15 @@ shinyServer(function(input, output) {
   
   # network stats scatter plot
   output$networkstatsplot <- renderPlot({
+    validate(need(!is.null(values$networkdf) , message="Waiting for datasets to be loaded..."))
     df <- values$networkdf
     axisvars <- get_networkstats_axis_vars()
     
     myxaxis <- axisvars$xaxisvar
     myyaxis <- axisvars$yaxisvar
     mycolor <- axisvars$colorvar
+    validate(need(!all(is.na(df[mycolor])) & !all(is.na(df[myxaxis])) & !all(is.na(df[myyaxis])), 
+                  message="Looks like the network and data don't come from the same organism. Please make sure all data is coming from the same species/strain!"))
     
     p=ggplot(df, aes_string(x=myxaxis, y=myyaxis, color=mycolor))+
       geom_point(alpha=0.5)+theme_bw()
