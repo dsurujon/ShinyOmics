@@ -486,7 +486,7 @@ shinyServer(function(input, output) {
       paste0(input$strain_panel3,"_Allexpts.csv")
     },
     content = function(file){
-      write.csv(values$RNAseq_panel3_mx, file, row.names=F)
+      write.csv(values$RNAseq_panel3_mx, file, row.names=T)
     }
     
   )
