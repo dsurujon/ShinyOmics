@@ -83,3 +83,8 @@ There should be one metadata file per strain. The metadata files should have at 
 The data files used can be the standard output of [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html). The requirement for the app is to have at least 3 columns: ```Gene```, ```Value``` (DE, fitness, protein abundance...), and ```padj``` (adjusted p-value) OR ```Sig``` (significant value) in each of the data files. If ```padj``` is provided, the app will generate a new ```Sig``` column based on ```Value``` and ```padj```.      
 #### Network Files
 Network files need to be specified in the ```data/network``` subdirectory, and should contain edge tables. The file name should end with ```_Edges.csv```, and the table should have two columns ```source``` and ```target```. Make sure the gene labels match those in the metadata files and RNAseq data files.     
+
+## Citing ShinyOmics
+If you use ShinyOmics in your project, please cite the following article:     
+Surujon, D., van Opijnen, T. ShinyOmics: collaborative exploration of omics-data. BMC Bioinformatics 21, 22 (2020). https://doi.org/10.1186/s12859-020-3360-x
+
